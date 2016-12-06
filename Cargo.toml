@@ -1,0 +1,17 @@
+[package]
+authors = ["MaidSafe Developers <dev@maidsafe.net>"]
+description = "System URI API library"
+documentation = "http://docs.maidsafe.net/system_uri/latest"
+homepage = "http://maidsafe.net"
+license = "GPL-3.0"
+name = "system_uri"
+readme = "README.md"
+repository = "https://github.com/maidsafe/system_uri"
+version = "0.0.1"
+
+[dependencies]
+clippy = { version = "=0.0.99", optional = true }
+
+[lib]
+crate_type = ["staticlib", "rlib", "cdylib"]
+name = "system_uri"
