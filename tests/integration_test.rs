@@ -22,22 +22,64 @@
 extern crate system_uri;
 extern crate rand;
 
+use std::process::Command;
+use std::env;
 use rand::Rng;
 
 use system_uri::{App, install, open};
 
-#[test]
-fn install_and_open() {
-    let mut rng = rand::thread_rng();
-    let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
-    println!("{:}", exec);
-    let app = App::new("net.maidsafe.example".to_string(),
-                       "MaidSafe".to_string(),
-                       "Example".to_string(),
-                       exec,
-                       None);
-    let schema = format!("testschema{}", rng.gen::<u32>());
+#[cfg(target_os = "linux")]
+fn check(scheme: String) {
 
-    assert!(install(app, vec![schema.clone()]).is_ok());
-    assert!(open(format!("{}:test", schema)).is_ok());
+    if env::var("TRAVIS").is_ok() {
+        // in travis we can only check the configuration, but not open
+        // as we don't actually have a desktop
+
+        println!("in travis");
+
+        let output = Command::new("xdg-mime")
+            .arg("query")
+            .arg("default")
+            .arg(format!("x-scheme-handler/{}", scheme))
+            .output()
+            .expect("xdg-mime failed");
+
+        assert!(output.status.success());
+        assert_eq!(String::from_utf8_lossy(output.stdout.as_slice()),
+                   "maidsafe-example.desktop\n".to_owned());
+
+    } else {
+        println!("opening {}:test", scheme);
+        assert!(open(format!("{}://test", scheme)).is_ok());
+    }
+}
+
+
+#[cfg(not(target_os = "linux"))]
+fn check(scheme: String) {
+    assert!(open(format!("{}:test", scheme)).is_ok());
+}
+
+
+#[test]
+fn install_and_check() {
+    if let Some(url) = env::args().skip(1).next() {
+        println!("Being started with {} as first parameter. Yay 🎉.", url);
+        // check that the first parameter is our schema
+        assert!(url.starts_with("testschema"));
+    } else {
+        // directly called, let's do the testing
+        let mut rng = rand::thread_rng();
+        let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
+        let schema = format!("testschema{}", rng.gen::<u32>());
+        println!("{:} for {}", exec, schema);
+        let app = App::new("net.maidsafe.example".to_string(),
+                           "MaidSafe".to_string(),
+                           "Example".to_string(),
+                           exec,
+                           None);
+
+        assert!(install(app, vec![schema.clone()]).is_ok());
+        check(schema);
+    }
 }
