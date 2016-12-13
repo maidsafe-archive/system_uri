@@ -30,6 +30,11 @@
 // For explanation of lint checks, run `rustc -W help` or see
 // https://github.
 // com/maidsafe/QA/blob/master/Documentation/Rust%20Lint%20Checks.md
+
+// inspired by
+// https://github.
+// com/feross/webtorrent-desktop/blob/4bb2056bc9c1a421815b97d03ffed512575dfde0/src/main/handlers.js
+
 #![forbid(exceeding_bitshifts, mutable_transmutes, no_mangle_const_items,
           unknown_crate_types, warnings)]
 #![deny(bad_style, deprecated, improper_ctypes, missing_docs,
@@ -48,5 +53,55 @@
 #![cfg_attr(feature="clippy", deny(clippy, unicode_not_nfc, wrong_pub_self_convention,
                                    option_unwrap_used))]
 
-#[test]
-fn place_holder() {}
+// `error_chain!` can recurse deeply
+#![recursion_limit = "1024"]
+
+#[macro_use]
+extern crate error_chain;
+
+
+#[cfg(any(target_os = "macos", feature="ffi"))]
+extern crate libc;
+
+mod app;
+pub use app::App;
+
+mod errors {
+    error_chain! {
+        types {
+            Error, ErrorKind, ChainErr, Result;
+        }
+
+        errors {
+            /// The SystemURI error used to wrap problems
+            SystemUriError(t: String) {
+                description("System URI Erro")
+                display("Could not execute: {}", t)
+            }
+        }
+    }
+}
+
+pub use errors::Error as SystemUriError;
+
+
+#[cfg(target_os = "linux")]
+mod linux;
+#[cfg(target_os = "linux")]
+pub use linux::{install, open};
+
+
+#[cfg(target_os = "windows")]
+mod windows;
+#[cfg(target_os = "windows")]
+pub use windows::{install, open};
+
+
+#[cfg(target_os = "macos")]
+mod macos;
+#[cfg(target_os = "macos")]
+pub use macos::{install, open};
+
+/// Foreign Function call Interface to use this library
+#[cfg(feature="ffi")]
+pub mod ffi;
