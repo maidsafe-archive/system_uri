@@ -6,7 +6,7 @@ Desktop System App URI registration handler
 
 |Crate|Linux/OS X|Windows|Coverage|Issues|
 |:---:|:--------:|:-----:|:------:|:----:|
-|[![](http://meritbadge.herokuapp.com/system_uri)](https://crates.io/crates/system_uri)|[![Build Status](https://travis-ci.org/maidsafe/system_uri.svg?branch=master)](https://travis-ci.org/maidsafe/system_uri)|[![Build status](https://ci.appveyor.com/api/projects/status/c61jthx04us5j57j/branch/master?svg=true)](https://ci.appveyor.com/project/MaidSafe-QA/system_uri/branch/master)|[![Coverage Status](https://coveralls.io/repos/maidsafe/system_uri/badge.svg?branch=master)](https://coveralls.io/r/maidsafe/system_uri?branch=master)|[![Stories in Ready](https://badge.waffle.io/maidsafe/system_uri.png?label=ready&title=Ready)](https://waffle.io/maidsafe/system_uri)|
+|[![](http://meritbadge.herokuapp.com/system_uri)](https://crates.io/crates/system_uri)|[![Build Status](https://travis-ci.org/maidsafe/system_uri.svg?branch=master)](https://travis-ci.org/maidsafe/system_uri)|[![Build status](https://ci.appveyor.com/api/projects/status/qpnwete63eakcipn/branch/master?svg=true)](https://ci.appveyor.com/project/MaidSafe-QA/system-uri/branch/master)|[![Coverage Status](https://coveralls.io/repos/maidsafe/system_uri/badge.svg?branch=master)](https://coveralls.io/r/maidsafe/system_uri?branch=master)|[![Stories in Ready](https://badge.waffle.io/maidsafe/system_uri.png?label=ready&title=Ready)](https://waffle.io/maidsafe/system_uri)|
 
 
 | [API Docs - master branch](http://docs.maidsafe.net/system_uri/master) | [MaidSafe website](https://maidsafe.net) | [SAFE Dev Forum](https://forum.safedev.org) | [SAFE Network Forum](https://safenetforum.org) |
