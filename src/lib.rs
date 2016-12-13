@@ -59,9 +59,11 @@
 #[macro_use]
 extern crate error_chain;
 
-
 #[cfg(any(target_os = "macos", feature="ffi"))]
 extern crate libc;
+
+#[cfg(target_os = "linux")]
+extern crate xdg_basedir;
 
 mod app;
 pub use app::App;

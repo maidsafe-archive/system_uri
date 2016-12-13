@@ -20,7 +20,6 @@
 // and limitations relating to use of the SAFE Network Software.
 
 
-use std::env;
 use std::ascii::AsciiExt;
 use std::fs::{create_dir_all, File};
 use std::io::Write;
@@ -29,6 +28,7 @@ use std::path::PathBuf;
 
 use errors::*;
 use app::App;
+use xdg_basedir::dirs::get_data_home;
 
 /// Open a given URI on Linux systems
 pub fn open(uri: String) -> Result<()> {
@@ -46,15 +46,13 @@ pub fn open(uri: String) -> Result<()> {
 
 /// register the given App for the given schemes on Linux
 pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
-    let home = env::home_dir().ok_or("Home directory not found")?;
+    let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!("{}-{}",
                              app.vendor.as_str().to_ascii_lowercase(),
                              app.name.as_str().to_ascii_lowercase());
 
     let mut desktop_target = PathBuf::new();
     desktop_target.push(home);
-    desktop_target.push(".local");
-    desktop_target.push("share");
     desktop_target.push("applications");
 
     let apps_dir = desktop_target.clone();
