@@ -22,6 +22,7 @@
 extern crate system_uri;
 extern crate rand;
 
+#[cfg(target_os = "linux")]
 use std::process::Command;
 use std::env;
 use rand::Rng;
