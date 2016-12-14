@@ -12,6 +12,11 @@ rust:
 matrix:
   allow_failures:
     - rust: nightly
+addons:
+  apt:
+    packages:
+      - desktop-file-utils
+      - xdg-utils
 sudo: false
 branches:
   only:
