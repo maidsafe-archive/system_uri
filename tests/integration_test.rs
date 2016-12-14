@@ -31,10 +31,12 @@ use system_uri::{App, install, open};
 #[cfg(target_os = "linux")]
 fn check(scheme: String) {
 
-    if env::var("TRAVIS").is_ok() {
+    if env::var("TRAVIS").is_err() {
+        println!("opening {}:test", scheme);
+        assert!(open(format!("{}://test", scheme)).is_ok());
+    } else {
         // in travis we can only check the configuration, but not open
         // as we don't actually have a desktop
-
         println!("in travis");
 
         let output = Command::new("xdg-mime")
@@ -48,9 +50,6 @@ fn check(scheme: String) {
         assert_eq!(String::from_utf8_lossy(output.stdout.as_slice()),
                    "maidsafe-example.desktop\n".to_owned());
 
-    } else {
-        println!("opening {}:test", scheme);
-        assert!(open(format!("{}://test", scheme)).is_ok());
     }
 }
 

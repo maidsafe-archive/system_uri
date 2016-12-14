@@ -47,7 +47,7 @@ pub fn open(uri: String) -> Result<()> {
 /// register the given App for the given schemes on Linux
 pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
-    let ascii_name = format!("{}-{}",
+    let ascii_name = format!("{}-{}.desktop",
                              app.vendor.as_str().to_ascii_lowercase(),
                              app.name.as_str().to_ascii_lowercase());
 
@@ -59,24 +59,32 @@ pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
 
     create_dir_all(apps_dir.clone()).chain_err(|| "Could not create app directory")?;
 
-    desktop_target.push(ascii_name + ".desktop");
+    desktop_target.push(ascii_name.clone());
     let mut f =
         File::create(desktop_target.as_path()).chain_err(|| "Could not create app desktop file")?;
     let schemes_list = schemes.iter()
-        .map(|s| format!("x-scheme-handler/{};", s))
-        .collect::<Vec<String>>()
-        .join("");
+        .map(|s| format!("x-scheme-handler/{}", s))
+        .collect::<Vec<String>>();
 
     f.write_fmt(format_args!(include_str!("./template.desktop"),
                                 name = app.name,
                                 exec = app.exec,
                                 // app.icon.unwrap_or("".to_string()),
-                                mime_types = schemes_list))
+                                mime_types = schemes_list.join(";")))
         .chain_err(|| " Could not write app desktop file")?;
 
     let status = Command::new("update-desktop-database").arg(apps_dir)
         .status()
         .chain_err(|| "Could not run update-desktop-database")?;
+
+
+    for scheme in schemes_list {
+        let _ = Command::new("xdg-mime").arg("default")
+            .arg(ascii_name.clone())
+            .arg(scheme)
+            .status()
+            .chain_err(|| "Could not run xdg-mime")?;
+    }
 
     if status.success() {
         Ok(())
