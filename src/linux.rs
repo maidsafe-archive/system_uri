@@ -39,7 +39,7 @@ pub fn open(uri: String) -> Result<()> {
     if status.success() {
         Ok(())
     } else {
-        Err(format!("Executing xdg-open failed. See terminal output for errors.").into())
+        Err(("Executing xdg-open failed. See terminal output for errors.").into())
     }
 
 }
@@ -89,7 +89,6 @@ pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
     if status.success() {
         Ok(())
     } else {
-        Err(format!("Executing update-desktop-database failed. See terminal output for errors.")
-            .into())
+        Err(("Executing update-desktop-database failed. See terminal output for errors.").into())
     }
 }

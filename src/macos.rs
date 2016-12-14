@@ -19,6 +19,7 @@
 // Please review the Licences for the specific language governing permissions
 // and limitations relating to use of the SAFE Network Software.
 
+#![allow(unsafe_code, trivial_numeric_casts)]
 
 use std::process::Command;
 use libc;

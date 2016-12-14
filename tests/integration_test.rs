@@ -19,6 +19,8 @@
 // Please review the Licences for the specific language governing permissions
 // and limitations relating to use of the SAFE Network Software.
 
+#[allow(unused_imports)]
+
 extern crate system_uri;
 extern crate rand;
 
@@ -55,7 +57,14 @@ fn check(scheme: String) {
 }
 
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(target_os = "macos")]
+fn check(_: String) {
+    // unfortunately registration won't work in mac unless we have a bundle
+    assert!(true);
+}
+
+
+#[cfg(target_os = "windows")]
 fn check(scheme: String) {
     assert!(open(format!("{}:test", scheme)).is_ok());
 }

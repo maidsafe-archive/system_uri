@@ -29,7 +29,7 @@ macro_rules! ffi_try {
                 println!(
                     "\nFFI cross-boundary error propagation:\n {}\n| **ERRNO: {}** {}\n {}\n\n",
                     decorator, err_code, err_str, decorator);
-                return err_code
+                return err_code;
             },
         }
     }
