@@ -22,13 +22,13 @@
 
 extern crate winreg;
 
-use std::path::Path;
-use std::process::Command;
-use self::winreg::RegKey;
-use self::winreg::enums::HKEY_CURRENT_USER;
+use app::App;
 
 use errors::*;
-use app::App;
+use self::winreg::RegKey;
+use self::winreg::enums::HKEY_CURRENT_USER;
+use std::path::Path;
+use std::process::Command;
 
 // as described at https://msdn.microsoft.com/en-us/library/aa767914(v=vs.85).aspx
 /// register the given App for the given schemes on Windows

@@ -60,25 +60,35 @@
 #[macro_use]
 extern crate error_chain;
 
-#[cfg(any(target_os = "macos", feature="ffi"))]
+#[cfg(target_os = "macos")]
 extern crate libc;
 
 #[cfg(target_os = "linux")]
 extern crate xdg_basedir;
 
+#[cfg(feature = "ffi")]
+#[macro_use]
+extern crate ffi_utils;
+
 mod app;
 pub use app::App;
 
 mod errors {
+    use std::str::Utf8Error;
+
     error_chain! {
         types {
             Error, ErrorKind, ChainErr, Result;
         }
 
+        foreign_links {
+            Utf8Error(Utf8Error);
+        }
+
         errors {
             /// The SystemURI error used to wrap problems
             SystemUriError(t: String) {
-                description("System URI Erro")
+                description("System URI Error")
                 display("Could not execute: {}", t)
             }
         }
