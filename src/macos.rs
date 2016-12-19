@@ -21,11 +21,11 @@
 
 #![allow(unsafe_code, trivial_numeric_casts)]
 
-use std::process::Command;
-use libc;
+use app::App;
 
 use errors::*;
-use app::App;
+use libc;
+use std::process::Command;
 
 #[repr(C)]
 struct __CFString(libc::c_void);

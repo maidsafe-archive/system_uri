@@ -20,14 +20,14 @@
 // and limitations relating to use of the SAFE Network Software.
 
 
-use std::ascii::AsciiExt;
-use std::fs::{create_dir_all, File};
-use std::io::Write;
-use std::process::Command;
-use std::path::PathBuf;
+use app::App;
 
 use errors::*;
-use app::App;
+use std::ascii::AsciiExt;
+use std::fs::{File, create_dir_all};
+use std::io::Write;
+use std::path::PathBuf;
+use std::process::Command;
 use xdg_basedir::dirs::get_data_home;
 
 /// Open a given URI on Linux systems

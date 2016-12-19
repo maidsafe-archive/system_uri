@@ -12,6 +12,7 @@ version = "0.0.1"
 [dependencies]
 clippy = { version = "=0.0.99", optional = true }
 error-chain = "0.7.1"
+ffi_utils = { git = "https://github.com/maidsafe/safe_client_libs.git", branch = "dev", optional = true }
 libc  = { version= "0.2", optional = true }
 
 [dev-dependencies]
@@ -34,4 +35,4 @@ name = "system_uri"
 [features]
 
 default = ["ffi"]
-ffi = ["libc"]
+ffi = ["libc", "ffi_utils"]
