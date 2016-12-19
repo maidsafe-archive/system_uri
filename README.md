@@ -17,7 +17,7 @@ Desktop System App URI registration handler
 
 `system_uri` bridges requests for the three major desktop platforms to register URI-scheme handlers and open URIs external through one simple interface. As this only works in tight integration with the system it is running on, this crate doesn't come with unittest but integration test through examples.
 
-To use it with the Mock:
+To use it:
 ```
 cargo build
 cargo run --example test

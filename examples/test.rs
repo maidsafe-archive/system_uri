@@ -23,11 +23,11 @@ extern crate system_uri;
 extern crate rand;
 
 use rand::Rng;
+use std::{thread, time};
 use std::env;
 use std::process::exit;
-use std::{thread, time};
 
-use system_uri::{App, install, open, SystemUriError};
+use system_uri::{App, SystemUriError, install, open};
 
 fn install_and_open() -> Result<(), SystemUriError> {
     let mut rng = rand::thread_rng();
