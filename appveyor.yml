@@ -1,0 +1,30 @@
+environment:
+  global:
+    RUST_BACKTRACE: 1
+  matrix:
+    - RUST_VERSION: stable
+
+branches:
+  only:
+    - master
+
+clone_depth: 1
+
+install:
+  - ps: |
+        $url = "https://github.com/maidsafe/QA/raw/master/Powershell%20Scripts/AppVeyor"
+        cmd /c curl -fsSL -o "Install Rustup.ps1" "$url/Install%20Rustup.ps1"
+        . ".\Install Rustup.ps1"
+
+platform:
+  - x86
+  - x64
+
+configuration:
+  - Release
+
+build_script:
+  - cargo rustc --verbose --release -- --test -Zno-trans
+
+test_script:
+  - cargo test --verbose --release
