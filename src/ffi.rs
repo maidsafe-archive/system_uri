@@ -37,18 +37,18 @@ pub unsafe extern "C" fn open(uri: FfiString) -> i32 {
 #[no_mangle]
 /// install the given App definition for each scheme URI on the system
 /// schemes are a comma delimited list of schemes
-pub unsafe extern "C" fn install(bundle: FfiString,
-                                 exec: FfiString,
+pub unsafe extern "C" fn install(bundle_id: FfiString,
                                  vendor: FfiString,
                                  name: FfiString,
+                                 exec: FfiString,
                                  icon: FfiString,
                                  schemes: FfiString)
                                  -> i32 {
     catch_unwind_error_code(|| {
-        let app = App::new(bundle.to_string()?,
-                           exec.to_string()?,
+        let app = App::new(bundle_id.to_string()?,
                            vendor.to_string()?,
                            name.to_string()?,
+                           exec.to_string()?,
                            Some(icon.to_string()?));
 
         let schemes = schemes.to_string()?;
