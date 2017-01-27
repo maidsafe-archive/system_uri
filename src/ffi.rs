@@ -21,9 +21,9 @@
 
 #![allow(unsafe_code)]
 
-use ffi_utils::{ErrorCode, catch_unwind_error_code};
 use super::{App, install as rust_install, open as rust_open};
 use super::errors::*;
+use ffi_utils::{ErrorCode, catch_unwind_error_code};
 
 use libc::c_char;
 use std::ffi::CStr;

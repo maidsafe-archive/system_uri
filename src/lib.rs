@@ -67,7 +67,6 @@ extern crate libc;
 extern crate xdg_basedir;
 
 #[cfg(feature = "ffi")]
-#[macro_use]
 extern crate ffi_utils;
 
 mod app;
