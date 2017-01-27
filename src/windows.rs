@@ -22,11 +22,11 @@
 
 extern crate winreg;
 
+use self::winreg::RegKey;
+use self::winreg::enums::HKEY_CURRENT_USER;
 use app::App;
 
 use errors::*;
-use self::winreg::RegKey;
-use self::winreg::enums::HKEY_CURRENT_USER;
 use std::path::Path;
 use std::process::Command;
 

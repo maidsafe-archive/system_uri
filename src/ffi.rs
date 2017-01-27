@@ -21,15 +21,19 @@
 
 #![allow(unsafe_code)]
 
-use ffi_utils::{ErrorCode, FfiString, catch_unwind_error_code};
 use super::{App, install as rust_install, open as rust_open};
 use super::errors::*;
+use ffi_utils::{ErrorCode, catch_unwind_error_code};
+
+use libc::c_char;
+use std::ffi::CStr;
+
 
 /// open the given URI on this system
 #[no_mangle]
-pub unsafe extern "C" fn open(uri: FfiString) -> i32 {
+pub unsafe extern "C" fn open(uri: *const c_char) -> i32 {
     catch_unwind_error_code(|| {
-        let uri = uri.to_string()?;
+        let uri = (CStr::from_ptr(uri).to_str()?).to_owned();
         rust_open(uri)
     })
 }
@@ -37,21 +41,21 @@ pub unsafe extern "C" fn open(uri: FfiString) -> i32 {
 #[no_mangle]
 /// install the given App definition for each scheme URI on the system
 /// schemes are a comma delimited list of schemes
-pub unsafe extern "C" fn install(bundle: FfiString,
-                                 exec: FfiString,
-                                 vendor: FfiString,
-                                 name: FfiString,
-                                 icon: FfiString,
-                                 schemes: FfiString)
+pub unsafe extern "C" fn install(bundle: *const c_char,
+                                 exec: *const c_char,
+                                 vendor: *const c_char,
+                                 name: *const c_char,
+                                 icon: *const c_char,
+                                 schemes: *const c_char)
                                  -> i32 {
     catch_unwind_error_code(|| {
-        let app = App::new(bundle.to_string()?,
-                           exec.to_string()?,
-                           vendor.to_string()?,
-                           name.to_string()?,
-                           Some(icon.to_string()?));
+        let app = App::new((CStr::from_ptr(bundle).to_str()?).to_owned(),
+                           (CStr::from_ptr(exec).to_str()?).to_owned(),
+                           (CStr::from_ptr(vendor).to_str()?).to_owned(),
+                           (CStr::from_ptr(name).to_str()?).to_owned(),
+                           Some((CStr::from_ptr(icon).to_str()?).to_owned()));
 
-        let schemes = schemes.to_string()?;
+        let schemes = (CStr::from_ptr(schemes).to_str()?).to_owned();
 
         rust_install(app,
                      schemes.split(',')
