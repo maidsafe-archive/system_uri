@@ -42,17 +42,17 @@ pub unsafe extern "C" fn open(uri: *const c_char) -> i32 {
 /// install the given App definition for each scheme URI on the system
 /// schemes are a comma delimited list of schemes
 pub unsafe extern "C" fn install(bundle: *const c_char,
-                                 exec: *const c_char,
                                  vendor: *const c_char,
                                  name: *const c_char,
+                                 exec: *const c_char,
                                  icon: *const c_char,
                                  schemes: *const c_char)
                                  -> i32 {
     catch_unwind_error_code(|| {
         let app = App::new((CStr::from_ptr(bundle).to_str()?).to_owned(),
-                           (CStr::from_ptr(exec).to_str()?).to_owned(),
                            (CStr::from_ptr(vendor).to_str()?).to_owned(),
                            (CStr::from_ptr(name).to_str()?).to_owned(),
+                           (CStr::from_ptr(exec).to_str()?).to_owned(),
                            Some((CStr::from_ptr(icon).to_str()?).to_owned()));
 
         let schemes = (CStr::from_ptr(schemes).to_str()?).to_owned();
