@@ -44,12 +44,18 @@ pub fn open(uri: String) -> Result<()> {
 
 }
 
+fn clean_string(input: String) -> String {
+    input.replace(".", "")
+        .replace("/", "")
+        .to_ascii_lowercase()
+}
+
 /// register the given App for the given schemes on Linux
 pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!("{}-{}.desktop",
-                             app.vendor.as_str().to_ascii_lowercase(),
-                             app.name.as_str().to_ascii_lowercase());
+                             clean_string(app.vendor).as_str(),
+                             clean_string(app.name.clone()).as_str());
 
     let mut desktop_target = PathBuf::new();
     desktop_target.push(home);

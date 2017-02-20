@@ -33,8 +33,8 @@ fn install_and_open() -> Result<(), SystemUriError> {
     let mut rng = rand::thread_rng();
     let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
     let app = App::new("net.maidsafe.example".to_string(),
-                       "MaidSafe".to_string(),
-                       "Example".to_string(),
+                       "MaidSafe Ltd.".to_string(),
+                       "Example R/W".to_string(),
                        exec,
                        None);
     let schema = format!("testschema{}", rng.gen::<u32>());
