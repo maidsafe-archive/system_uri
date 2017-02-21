@@ -20,9 +20,7 @@ main() {
     cross rustc --target $TARGET --release
 
     # copy linux
-    cp target/$TARGET/release/libsystem_uri.so $stage/ || true
-    # and mac
-    cp target/$TARGET/release/libsystem_uri.dylib $stage/ || true
+    cp target/$TARGET/release/libsystem_uri.* $stage/
     cp README.md $stage/
     cp LICENSE $stage/
 
