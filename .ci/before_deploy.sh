@@ -27,7 +27,7 @@ main() {
 
     cd $stage
 
-    if [ -z $TARGET_NAME ]; then
+    if [ ! -z $TARGET_NAME ]; then
         zip $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET_NAME.zip *
     else
         zip $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.zip *

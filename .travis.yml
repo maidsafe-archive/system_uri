@@ -23,7 +23,6 @@ env:
 
     # auto release features
     - CRATE_NAME=system_uri
-    - TARGET_NAME=linux-x86_64
     - TARGET=x86_64-unknown-linux-gnu
     # We don't run tests in cross
     - DISABLE_TESTS=1
@@ -42,12 +41,12 @@ matrix:
     # Linux
     - env: >
         TARGET=i686-unknown-linux-gnu
-        TARGET_NAME=linux-i686
+        TARGET_NAME=linux-x32
       os: linux
 
     - env: >
         TARGET=x86_64-unknown-linux-gnu
-        TARGET_NAME=linux-x86_64
+        TARGET_NAME=linux-x64
       os: linux
 
     - env: >
@@ -60,12 +59,12 @@ matrix:
     # OSX
     - env: >
         TARGET=i686-apple-darwin
-        TARGET_NAME=darwin-i686
+        TARGET_NAME=darwin-x32
         MACOSX_DEPLOYMENT_TARGET=10.7
       os: osx
     - env: >
         TARGET=x86_64-apple-darwin
-        TARGET_NAME=darwin-x86_64
+        TARGET_NAME=darwin-x64
         MACOSX_DEPLOYMENT_TARGET=10.7
       os: osx
 
