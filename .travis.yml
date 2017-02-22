@@ -23,6 +23,7 @@ env:
 
     # auto release features
     - CRATE_NAME=system_uri
+    - TARGET_NAME=linux-x86_64
     - TARGET=x86_64-unknown-linux-gnu
     # We don't run tests in cross
     - DISABLE_TESTS=1
@@ -41,7 +42,14 @@ matrix:
     # Linux
     - env: >
         TARGET=i686-unknown-linux-gnu
+        TARGET_NAME=linux-i686
       os: linux
+
+    - env: >
+        TARGET=x86_64-unknown-linux-gnu
+        TARGET_NAME=linux-x86_64
+      os: linux
+
     - env: >
         TARGET=i686-unknown-linux-musl
       os: linux
@@ -52,10 +60,12 @@ matrix:
     # OSX
     - env: >
         TARGET=i686-apple-darwin
+        TARGET_NAME=darwin-i686
         MACOSX_DEPLOYMENT_TARGET=10.7
       os: osx
     - env: >
         TARGET=x86_64-apple-darwin
+        TARGET_NAME=darwin-x86_64
         MACOSX_DEPLOYMENT_TARGET=10.7
       os: osx
 
@@ -94,7 +104,7 @@ deploy:
   api_key:
     secure: "VbdxST1+rBprNucUj6FgK9Tf1V8j6681djhUW2vvXGzr3RgRbgGRYFU1Izb9YCXCMOv/u4f7B/1ONap6Nin5ubcHiuEyODzrIFEE8VVvUBIdCDRr8hdgR0RZZ2sIkOWlXaaK+pQuYAaI3RpWEXBCDw2LBHNaG+lr0399UPa4W6YTETwf/85ATR4UoBD9IIUdwBf/KDrnJdJK2dqADz6T2D7u9tvT+CFNp/AwJbrvLaivwxzRGN21CAEie5dyl4F7o1AshKPxbcwU5dqVBHW7kCX5/C7dLu+56FrsFIVEd6DdA2hACaLpEKkxah6IXEVmMqFwv4FujmYBDYqrjb81D14QtjA/kl8nM5+P5Zv+GLsByvxrd97hxO4tS7I5nyugFbKvlitKBkv9d9yX9N1Sbxprlj1CJ8Oft9twiKFKfVp0rDtVgUvNn7ErThIRRcvD40etjbu6HTklX9w5v5LjjmgLW9LhpLBH27zmviESwY64IkHPrWUVC0Y+0wzQDNgOD1Pw7zVQYvRZ09W8TF/tQCgk7+4uyo6NLjPZI+iehBzkzpzy9yZx8XtqJquZtWgo+dxf0NRWnElXIiUBfitj6RzZKJtENl+KjunmSgTK4OkjI7xOkSMYFxNy3/HXnpisB2l9QpQW+BPYYg9ip9s0XGVyyZ4+HsLp8XzXu+s2Zm4="
   file_glob: true
-  file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
+  file: $CRATE_NAME-$TRAVIS_TAG-*
   on:
     # TODO Here you can pick which targets will generate binary releases
     # In this example, there are some targets that are tested using the stable

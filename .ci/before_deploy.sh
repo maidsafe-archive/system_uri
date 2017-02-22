@@ -25,8 +25,15 @@ main() {
     cp LICENSE $stage/
 
     cd $stage
-    tar czf $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.tar.gz *
+
+    if [ -z $TARGET_NAME ]; then
+        zip $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET_NAME.zip *
+    else
+        zip $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.zip *
+    fi
     cd $src
+
+
 
     rm -rf $stage
 }
