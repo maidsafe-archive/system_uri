@@ -17,6 +17,7 @@ main() {
 
     test -f Cargo.lock || cargo generate-lockfile
 
+    cargo clean
     cross rustc --target $TARGET --release
 
     # copy linux
