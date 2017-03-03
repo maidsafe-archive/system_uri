@@ -23,11 +23,11 @@ extern crate system_uri;
 extern crate rand;
 extern crate ffi_utils;
 
+use ffi_utils::base64_encode;
 use rand::Rng;
 use std::{thread, time};
 use std::env;
 use std::process::exit;
-use ffi_utils::base64_encode;
 
 
 use system_uri::{App, SystemUriError, install, open};

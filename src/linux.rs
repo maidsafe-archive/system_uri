@@ -69,7 +69,13 @@ pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
     let mut f =
         File::create(desktop_target.as_path()).chain_err(|| "Could not create app desktop file")?;
     let schemes_list = schemes.iter()
-        .map(|s| format!("x-scheme-handler/{}", s))
+        .map(|s| match s.matches(char::is_uppercase).next() {
+            Some(_) => {
+                println!("[WARN] system-uri: converting schema '{}' to lowercase", s);
+                format!("x-scheme-handler/{}", s.to_lowercase())
+            }
+            None => format!("x-scheme-handler/{}", s),
+        })
         .collect::<Vec<String>>();
 
     f.write_fmt(format_args!(include_str!("./template.desktop"),
