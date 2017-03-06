@@ -26,7 +26,7 @@ use std::ffi::CStr;
 use std::os::raw::c_void;
 
 
-/// open the given URI on this system
+/// Open the given URI on this system.
 #[no_mangle]
 pub unsafe extern "C" fn open(
     uri: *const c_char,
@@ -39,9 +39,9 @@ pub unsafe extern "C" fn open(
     })
 }
 
+/// Install the given App definition for each scheme URI on the system.
+/// Schemes are a comma delimited list of schemes.
 #[no_mangle]
-/// install the given App definition for each scheme URI on the system
-/// schemes are a comma delimited list of schemes
 pub unsafe extern "C" fn install(
     bundle: *const c_char,
     vendor: *const c_char,

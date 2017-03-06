@@ -14,6 +14,7 @@ addons:
     packages:
       - desktop-file-utils
       - xdg-utils
+      - links
 sudo: false
 branches:
   only:

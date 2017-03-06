@@ -17,6 +17,8 @@
 
 extern crate system_uri;
 extern crate rand;
+#[macro_use]
+extern crate unwrap;
 
 use rand::Rng;
 use std::env;
@@ -29,10 +31,9 @@ use system_uri::open;
 
 #[cfg(target_os = "linux")]
 fn check(scheme: &str) {
-
     if env::var("TRAVIS").is_err() {
         println!("opening {}:test", scheme);
-        assert!(open(format!("{}://test", scheme)).is_ok());
+        let _ = unwrap!(open(format!("{}://test", scheme)));
     } else {
         // in travis we can only check the configuration, but not open
         // as we don't actually have a desktop
@@ -64,7 +65,7 @@ fn check(_: &str) {
 
 #[cfg(target_os = "windows")]
 fn check(scheme: &str) {
-    assert!(open(format!("{}:test", scheme)).is_ok());
+    let _ = unwrap!(open(format!("{}:test", scheme)));
 }
 
 
@@ -78,7 +79,7 @@ fn install_and_check() {
         // directly called, let's do the testing
         let mut rng = rand::thread_rng();
         let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
-        let schema = format!("testschema{}", rng.gen::<u32>());
+        let schema = format!("testschema-ABC-{}", rng.gen::<u32>());
         println!("{:} for {}", exec, schema);
         let app = App::new(
             "net.maidsafe.example".to_string(),
