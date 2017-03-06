@@ -80,7 +80,7 @@ fn install_and_check() {
         // directly called, let's do the testing
         let mut rng = rand::thread_rng();
         let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
-        let schema = format!("testschema{}", rng.gen::<u32>());
+        let schema = format!("testschema-ABC-{}", rng.gen::<u32>());
         println!("{:} for {}", exec, schema);
         let app = App::new("net.maidsafe.example".to_string(),
                            "MaidSafe".to_string(),
