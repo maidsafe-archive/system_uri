@@ -8,6 +8,10 @@ branches:
   only:
     - master
 
+cache:
+  - '%USERPROFILE%\.cargo'
+  - '%APPVEYOR_BUILD_FOLDER%\target'
+
 clone_depth: 1
 
 install:

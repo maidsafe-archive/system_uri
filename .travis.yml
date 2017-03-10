@@ -8,8 +8,7 @@ os:
 language: rust
 rust:
   - stable
-  - nightly
-
+  - nightly-2016-11-17
 addons:
   apt:
     packages:
@@ -23,17 +22,36 @@ cache:
   cargo: true
 before_script:
   - (which cargo-install-update && cargo install-update cargo-update) || cargo install cargo-update
-  - (which rustfmt && cargo install-update rustfmt) || cargo install rustfmt
   - (which cargo-prune && cargo install-update cargo-prune) || cargo install cargo-prune
+  - if [ "${TRAVIS_RUST_VERSION}" = stable ]; then
+      (which rustfmt && cargo install-update rustfmt) || cargo install rustfmt;
+    elif [ "${TRAVIS_OS_NAME}" = linux ]; then
+      clippy_vers=0.0.99;
+      if ! cargo clippy --version | grep -q $clippy_vers; then
+        cargo install clippy --vers=$clippy_vers --force;
+      fi
+    fi
 script:
-  - cargo build
-  - if [ "${TRAVIS_RUST_VERSION}" = stable ] && [ "${TRAVIS_OS_NAME}" = linux ]; then
+  - if [ "${TRAVIS_RUST_VERSION}" = stable ]; then
+      (
+        if [ "${TRAVIS_OS_NAME}" = linux ]; then
+          (
+            set -x;
+            cargo fmt -- --write-mode=diff &&
+            cargo test --release --verbose
+          );
+        else
+          (
+            set -x;
+            cargo test --release --verbose --no-run
+          );
+        fi
+      );
+    elif [ "${TRAVIS_OS_NAME}" = linux ]; then
       (
         set -x;
-        cargo fmt -- --write-mode=diff &&
-        cargo test  --verbose --release
+        cargo clippy && cargo clippy --profile test
       );
     fi
-  - curl -sSL https://github.com/maidsafe/QA/raw/master/bash_scripts/travis/run_clippy.sh | bash
 before_cache:
   - cargo prune
