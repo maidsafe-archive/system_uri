@@ -27,16 +27,19 @@ use std::process::Command;
 
 // as described at https://msdn.microsoft.com/en-us/library/aa767914(v=vs.85).aspx
 /// register the given App for the given schemes on Windows
-pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
+pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     // but we can't write on root, we'll have to do it for the curent user only
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
     for protocol in schemes {
         let base_path = Path::new("Software").join("Classes").join(protocol);
-        let key = hkcu.create_subkey(&base_path).chain_err(|| "could not create subkey")?;
+        let key = hkcu.create_subkey(&base_path)
+            .chain_err(|| "could not create subkey")?;
         // set our app name as the for reference
-        key.set_value("", &app.name).chain_err(|| "could not set app name key")?;
+        key.set_value("", &app.name)
+            .chain_err(|| "could not set app name key")?;
         //
-        key.set_value("URL Protocol", &"").chain_err(|| "could set url protocol")?;
+        key.set_value("URL Protocol", &"")
+            .chain_err(|| "could set url protocol")?;
 
         let command_key = hkcu.create_subkey(&base_path.join("shell").join("open").join("command"))
             .chain_err(|| "could not execute open")?;

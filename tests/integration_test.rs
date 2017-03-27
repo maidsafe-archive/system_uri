@@ -28,7 +28,7 @@ use system_uri::{App, install};
 use system_uri::open;
 
 #[cfg(target_os = "linux")]
-fn check(scheme: String) {
+fn check(scheme: &str) {
 
     if env::var("TRAVIS").is_err() {
         println!("opening {}:test", scheme);
@@ -54,14 +54,14 @@ fn check(scheme: String) {
 
 
 #[cfg(target_os = "macos")]
-fn check(_: String) {
+fn check(_: &str) {
     // unfortunately registration won't work in mac unless we have a bundle
     assert!(true);
 }
 
 
 #[cfg(target_os = "windows")]
-fn check(scheme: String) {
+fn check(scheme: &str) {
     assert!(open(format!("{}:test", scheme)).is_ok());
 }
 
@@ -84,7 +84,7 @@ fn install_and_check() {
                            exec,
                            None);
 
-        assert!(install(app, vec![schema.clone()]).is_ok());
-        check(schema);
+        assert!(install(&app, &[schema.clone()]).is_ok());
+        check(&schema);
     }
 }

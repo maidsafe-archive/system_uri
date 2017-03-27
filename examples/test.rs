@@ -38,7 +38,7 @@ fn install_and_open() -> Result<(), SystemUriError> {
     println!("Installing ourselves under {}", schema);
 
 
-    install(app, vec![schema.clone()]).and_then(|()| {
+    install(&app, &[schema.clone()]).and_then(|()| {
 
         println!("Install succeeded 😄");
 

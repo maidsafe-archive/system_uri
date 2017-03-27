@@ -8,7 +8,7 @@ os:
 language: rust
 rust:
   - stable
-  - nightly-2016-11-17
+  - nightly-2017-03-16
 addons:
   apt:
     packages:
@@ -26,7 +26,7 @@ before_script:
   - if [ "${TRAVIS_RUST_VERSION}" = stable ]; then
       (which rustfmt && cargo install-update rustfmt) || cargo install rustfmt;
     elif [ "${TRAVIS_OS_NAME}" = linux ]; then
-      clippy_vers=0.0.99;
+      clippy_vers=0.0.120;
       if ! cargo clippy --version | grep -q $clippy_vers; then
         cargo install clippy --vers=$clippy_vers --force;
       fi
@@ -50,7 +50,7 @@ script:
     elif [ "${TRAVIS_OS_NAME}" = linux ]; then
       (
         set -x;
-        cargo clippy && cargo clippy --profile test
+        cargo clippy --profile test
       );
     fi
 before_cache:

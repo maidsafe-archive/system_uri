@@ -39,16 +39,19 @@ pub fn open(uri: String) -> Result<()> {
 
 }
 
-fn clean_string(input: String) -> String {
-    input.replace(".", "").replace("/", "").to_ascii_lowercase()
+fn clean_string(input: &str) -> String {
+    input
+        .replace(".", "")
+        .replace("/", "")
+        .to_ascii_lowercase()
 }
 
 /// register the given App for the given schemes on Linux
-pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
+pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!("{}-{}.desktop",
-                             clean_string(app.vendor).as_str(),
-                             clean_string(app.name.clone()).as_str());
+                             clean_string(&app.vendor).as_str(),
+                             clean_string(&app.name).as_str());
 
     let mut desktop_target = PathBuf::new();
     desktop_target.push(home);
@@ -61,8 +64,10 @@ pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
     desktop_target.push(ascii_name.clone());
     let mut f =
         File::create(desktop_target.as_path()).chain_err(|| "Could not create app desktop file")?;
-    let schemes_list =
-        schemes.iter().map(|s| format!("x-scheme-handler/{}", s)).collect::<Vec<String>>();
+    let schemes_list = schemes
+        .iter()
+        .map(|s| format!("x-scheme-handler/{}", s))
+        .collect::<Vec<String>>();
 
     f.write_fmt(format_args!(include_str!("./template.desktop"),
                                 name = app.name,

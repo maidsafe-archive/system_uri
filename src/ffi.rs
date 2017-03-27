@@ -53,7 +53,11 @@ pub unsafe extern "C" fn install(bundle: *const c_char,
 
         let schemes = (CStr::from_ptr(schemes).to_str()?).to_owned();
 
-        rust_install(app, schemes.split(',').map(|s| s.to_string()).collect())
+        rust_install(&app,
+                     &schemes
+                          .split(',')
+                          .map(|s| s.to_string())
+                          .collect::<Vec<_>>())
     })
 }
 

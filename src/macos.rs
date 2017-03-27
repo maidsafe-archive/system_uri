@@ -79,7 +79,7 @@ pub fn open(uri: String) -> Result<()> {
 }
 
 /// register the given App for the given schemes on MacOSX
-pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
+pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let bundle_id = convert_to_cfstring(app.bundle_id.as_str());
     for scheme in schemes {
         // FIXME: do we have any way to learn this failed?
