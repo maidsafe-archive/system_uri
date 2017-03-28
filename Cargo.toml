@@ -1,8 +1,8 @@
 [package]
 authors = ["MaidSafe Developers <dev@maidsafe.net>"]
 description = "System URI API library"
-documentation = "http://docs.maidsafe.net/system_uri/latest"
-homepage = "http://maidsafe.net"
+documentation = "https://docs.rs/system_uri"
+homepage = "https://maidsafe.net"
 license = "GPL-3.0"
 name = "system_uri"
 readme = "README.md"
@@ -10,7 +10,6 @@ repository = "https://github.com/maidsafe/system_uri"
 version = "0.0.1"
 
 [dependencies]
-clippy = { version = "=0.0.99", optional = true }
 error-chain = "0.7.1"
 ffi_utils = { git = "https://github.com/maidsafe/safe_client_libs.git", branch = "dev", optional = true }
 libc  = { version= "0.2", optional = true }
@@ -18,21 +17,19 @@ libc  = { version= "0.2", optional = true }
 [dev-dependencies]
 rand = "0.3.0"
 
-
 [target.'cfg(target_os = "windows")'.dependencies]
 winreg = "0.4"
 
 [target.'cfg(target_os = "linux")'.dependencies]
-xdg-basedir  = "1.0.0"
+xdg-basedir = "1.0.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
-libc  = "0.2"
+libc = "0.2"
 
 [lib]
 crate_type = ["staticlib", "rlib", "cdylib"]
 name = "system_uri"
 
 [features]
-
 default = ["ffi"]
 ffi = ["libc", "ffi_utils"]

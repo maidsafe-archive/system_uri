@@ -1,24 +1,19 @@
 // Copyright 2016 MaidSafe.net limited.
 //
-// This SAFE Network Software is licensed to you under (1) the MaidSafe.net
-// Commercial License, version 1.0 or later, or (2) The General Public License
-// (GPL), version 3, depending on which licence you accepted on initial access
-// to the Software (the "Licences").
+// This SAFE Network Software is licensed to you under (1) the MaidSafe.net Commercial License,
+// version 1.0 or later, or (2) The General Public License (GPL), version 3, depending on which
+// licence you accepted on initial access to the Software (the "Licences").
 //
-// By contributing code to the SAFE Network Software, or to this project
-// generally, you agree to be bound by the terms of the MaidSafe Contributor
-// Agreement, version 1.0.
-// This, along with the Licenses can be found in the root directory of this
-// project at LICENSE, COPYING and CONTRIBUTOR.
+// By contributing code to the SAFE Network Software, or to this project generally, you agree to be
+// bound by the terms of the MaidSafe Contributor Agreement.  This, along with the Licenses can be
+// found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.
 //
-// Unless required by applicable law or agreed to in writing, the SAFE Network
-// Software distributed under the GPL Licence is distributed on an "AS IS"
-// BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-// implied.
+// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed
+// under the GPL Licence is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.
 //
-// Please review the Licences for the specific language governing permissions
-// and limitations relating to use of the SAFE Network Software.
-
+// Please review the Licences for the specific language governing permissions and limitations
+// relating to use of the SAFE Network Software.
 
 use app::App;
 
@@ -44,18 +39,19 @@ pub fn open(uri: String) -> Result<()> {
 
 }
 
-fn clean_string(input: String) -> String {
-    input.replace(".", "")
+fn clean_string(input: &str) -> String {
+    input
+        .replace(".", "")
         .replace("/", "")
         .to_ascii_lowercase()
 }
 
 /// register the given App for the given schemes on Linux
-pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
+pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!("{}-{}.desktop",
-                             clean_string(app.vendor).as_str(),
-                             clean_string(app.name.clone()).as_str());
+                             clean_string(&app.vendor).as_str(),
+                             clean_string(&app.name).as_str());
 
     let mut desktop_target = PathBuf::new();
     desktop_target.push(home);
@@ -68,7 +64,8 @@ pub fn install(app: App, schemes: Vec<String>) -> Result<()> {
     desktop_target.push(ascii_name.clone());
     let mut f =
         File::create(desktop_target.as_path()).chain_err(|| "Could not create app desktop file")?;
-    let schemes_list = schemes.iter()
+    let schemes_list = schemes
+        .iter()
         .map(|s| format!("x-scheme-handler/{}", s))
         .collect::<Vec<String>>();
 
