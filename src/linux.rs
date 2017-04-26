@@ -27,7 +27,8 @@ use xdg_basedir::dirs::get_data_home;
 
 /// Open a given URI on Linux systems
 pub fn open(uri: String) -> Result<()> {
-    let status = Command::new("xdg-open").arg(uri)
+    let status = Command::new("xdg-open")
+        .arg(uri)
         .status()
         .chain_err(|| "Could not execute xdg-open")?;
 
@@ -59,11 +60,12 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
     let apps_dir = desktop_target.clone();
 
-    create_dir_all(apps_dir.clone()).chain_err(|| "Could not create app directory")?;
+    create_dir_all(apps_dir.clone())
+        .chain_err(|| "Could not create app directory")?;
 
     desktop_target.push(ascii_name.clone());
-    let mut f =
-        File::create(desktop_target.as_path()).chain_err(|| "Could not create app desktop file")?;
+    let mut f = File::create(desktop_target.as_path())
+        .chain_err(|| "Could not create app desktop file")?;
     let schemes_list = schemes
         .iter()
         .map(|s| format!("x-scheme-handler/{}", s))
@@ -76,13 +78,15 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
                                 mime_types = schemes_list.join(";")))
         .chain_err(|| " Could not write app desktop file")?;
 
-    let status = Command::new("update-desktop-database").arg(apps_dir)
+    let status = Command::new("update-desktop-database")
+        .arg(apps_dir)
         .status()
         .chain_err(|| "Could not run update-desktop-database")?;
 
 
     for scheme in schemes_list {
-        let _ = Command::new("xdg-mime").arg("default")
+        let _ = Command::new("xdg-mime")
+            .arg("default")
             .arg(ascii_name.clone())
             .arg(scheme)
             .status()
