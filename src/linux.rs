@@ -27,12 +27,12 @@ use xdg_basedir::dirs::get_data_home;
 
 /// Open a given URI on Linux systems
 pub fn open(uri: String) -> Result<()> {
-    let status = Command::new("xdg-open")
+    let output = Command::new("xdg-open")
         .arg(uri)
-        .status()
+        .output()
         .chain_err(|| "Could not execute xdg-open")?;
 
-    if status.success() {
+    if output.status.success() {
         Ok(())
     } else {
         Err(("Executing xdg-open failed. See terminal output for errors.").into())

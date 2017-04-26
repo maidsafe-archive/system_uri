@@ -67,12 +67,12 @@ fn convert_to_cfstring(content: &str) -> CFStringRef {
 
 /// Open a given URI on MacOSX systems
 pub fn open(uri: String) -> Result<()> {
-    let status = Command::new("open")
+    let output = Command::new("open")
         .arg(uri)
-        .status()
+        .output()
         .chain_err(|| "Could not execute open")?;
 
-    if status.success() {
+    if output.status.success() {
         Ok(())
     } else {
         Err(format!("Executing open failed. See terminal output for errors.").into())
