@@ -43,7 +43,8 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
         let command_key = hkcu.create_subkey(&base_path.join("shell").join("open").join("command"))
             .chain_err(|| "could not execute open")?;
-        command_key.set_value("", &format!("\"{}\" \"%1\"", app.exec))
+        command_key
+            .set_value("", &format!("\"{}\" \"%1\"", app.exec))
             .chain_err(|| "could not create subkey")?
     }
     Ok(())
@@ -51,7 +52,8 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
 /// Open a given URI on Windows
 pub fn open(uri: String) -> Result<()> {
-    let _ = Command::new("explorer").arg(uri)
+    let _ = Command::new("explorer")
+        .arg(uri)
         .status()
         .chain_err(|| "Could not open 'explorere")?;
     // 'explorer' always comes back with a bad error code :(
