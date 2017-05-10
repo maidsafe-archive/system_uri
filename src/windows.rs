@@ -41,7 +41,7 @@ fn to_wide_chars(s: &str) -> Vec<u16> {
 }
 
 #[link(name = "shell32")]
-extern "C" {
+extern "system" {
     pub fn ShellExecuteW(hwnd: HWND,
                          lpOperation: LPCWSTR,
                          lpFile: LPCWSTR,
