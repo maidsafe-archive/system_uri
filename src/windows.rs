@@ -15,15 +15,39 @@
 // Please review the Licences for the specific language governing permissions and limitations
 // relating to use of the SAFE Network Software.
 
-extern crate winreg;
 
+#![allow(unsafe_code)]
+
+extern crate winreg;
+extern crate winapi;
+
+use self::winapi::windef::HWND;
+use self::winapi::winnt::LPCWSTR;
 use self::winreg::RegKey;
 use self::winreg::enums::HKEY_CURRENT_USER;
 use app::App;
 
 use errors::*;
+use std::ffi::OsStr;
+use std::os::windows::ffi::OsStrExt;
 use std::path::Path;
-use std::process::Command;
+use std::ptr;
+
+fn to_wide_chars(s: &str) -> Vec<u16> {
+    OsStr::new(s).encode_wide().chain(Some(0).into_iter()).collect::<Vec<_>>()
+}
+
+#[link(name = "shell32")]
+extern "C" {
+    pub fn ShellExecuteW(hwnd: HWND,
+                         lpOperation: LPCWSTR,
+                         lpFile: LPCWSTR,
+                         lpParameters: LPCWSTR,
+                         lpDirectory: LPCWSTR,
+                         nShowCmd: i32)
+                         -> i32;
+}
+
 
 // as described at https://msdn.microsoft.com/en-us/library/aa767914(v=vs.85).aspx
 /// register the given App for the given schemes on Windows
@@ -43,8 +67,7 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
         let command_key = hkcu.create_subkey(&base_path.join("shell").join("open").join("command"))
             .chain_err(|| "could not execute open")?;
-        command_key
-            .set_value("", &format!("\"{}\" \"%1\"", app.exec))
+        command_key.set_value("", &format!("\"{}\" \"%1\"", app.exec))
             .chain_err(|| "could not create subkey")?
     }
     Ok(())
@@ -52,11 +75,17 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
 /// Open a given URI on Windows
 pub fn open(uri: String) -> Result<()> {
-    let _ = Command::new("explorer")
-        .arg(uri)
-        .status()
-        .chain_err(|| "Could not open 'explorere")?;
-    // 'explorer' always comes back with a bad error code :(
-    // but neither 'start' nor 'cmd /c start' seem to work...
-    Ok(())
+    let err = unsafe {
+        ShellExecuteW(ptr::null_mut(),
+                      to_wide_chars("open").as_ptr(),
+                      to_wide_chars(&(uri.replace("\n", "%0A"))).as_ptr(),
+                      ptr::null(),
+                      ptr::null(),
+                      winapi::SW_SHOWNORMAL)
+    };
+    if err < 32 {
+        Err(format!("Executing open failed with error_code {}.", err).into())
+    } else {
+        Ok(())
+    }
 }
