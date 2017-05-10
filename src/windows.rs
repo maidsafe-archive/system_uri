@@ -34,7 +34,10 @@ use std::path::Path;
 use std::ptr;
 
 fn to_wide_chars(s: &str) -> Vec<u16> {
-    OsStr::new(s).encode_wide().chain(Some(0).into_iter()).collect::<Vec<_>>()
+    OsStr::new(s)
+        .encode_wide()
+        .chain(Some(0).into_iter())
+        .collect::<Vec<_>>()
 }
 
 #[link(name = "shell32")]
@@ -67,7 +70,8 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
         let command_key = hkcu.create_subkey(&base_path.join("shell").join("open").join("command"))
             .chain_err(|| "could not execute open")?;
-        command_key.set_value("", &format!("\"{}\" \"%1\"", app.exec))
+        command_key
+            .set_value("", &format!("\"{}\" \"%1\"", app.exec))
             .chain_err(|| "could not create subkey")?
     }
     Ok(())
