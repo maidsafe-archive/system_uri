@@ -104,7 +104,6 @@ mod windows;
 #[cfg(target_os = "windows")]
 pub use windows::{install, open};
 
-
 #[cfg(target_os = "macos")]
 mod macos;
 #[cfg(target_os = "macos")]

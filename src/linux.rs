@@ -41,10 +41,7 @@ pub fn open(uri: String) -> Result<()> {
 }
 
 fn clean_string(input: &str) -> String {
-    input
-        .replace(".", "")
-        .replace("/", "")
-        .to_ascii_lowercase()
+    input.replace(".", "").replace("/", "").to_ascii_lowercase()
 }
 
 /// register the given App for the given schemes on Linux
