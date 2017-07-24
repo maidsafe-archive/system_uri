@@ -36,13 +36,14 @@ type CFStringEncoding = u32;
 extern "C" {
     static kCFAllocatorDefault: CFAllocatorRef;
     static kCFAllocatorNull: CFAllocatorRef;
-    fn CFStringCreateWithBytes(alloc: CFAllocatorRef,
-                               bytes: *const u8,
-                               numBytes: CFIndex,
-                               encoding: CFStringEncoding,
-                               isExternalRepresentation: u8,
-                               contentsDeallocator: CFAllocatorRef)
-                               -> CFStringRef;
+    fn CFStringCreateWithBytes(
+        alloc: CFAllocatorRef,
+        bytes: *const u8,
+        numBytes: CFIndex,
+        encoding: CFStringEncoding,
+        isExternalRepresentation: u8,
+        contentsDeallocator: CFAllocatorRef,
+    ) -> CFStringRef;
 }
 
 
@@ -55,27 +56,30 @@ extern "C" {
 // helper to hand over strings to macos
 fn convert_to_cfstring(content: &str) -> CFStringRef {
     unsafe {
-        CFStringCreateWithBytes(kCFAllocatorDefault,
-                                content.as_ptr(),
-                                content.len() as CFIndex,
-                                0x08000100 as CFStringEncoding,
-                                false as u8,
-                                kCFAllocatorNull)
+        CFStringCreateWithBytes(
+            kCFAllocatorDefault,
+            content.as_ptr(),
+            content.len() as CFIndex,
+            0x08000100 as CFStringEncoding,
+            false as u8,
+            kCFAllocatorNull,
+        )
     }
 }
 
 
 /// Open a given URI on MacOSX systems
 pub fn open(uri: String) -> Result<()> {
-    let output = Command::new("open")
-        .arg(uri)
-        .output()
-        .chain_err(|| "Could not execute open")?;
+    let output = Command::new("open").arg(uri).output().chain_err(
+        || "Could not execute open",
+    )?;
 
     if output.status.success() {
         Ok(())
     } else {
-        Err(format!("Executing open failed. See terminal output for errors.").into())
+        Err(
+            format!("Executing open failed. See terminal output for errors.").into(),
+        )
     }
 }
 

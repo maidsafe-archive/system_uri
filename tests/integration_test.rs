@@ -46,8 +46,10 @@ fn check(scheme: &str) {
             .expect("xdg-mime failed");
 
         assert!(output.status.success());
-        assert_eq!(String::from_utf8_lossy(output.stdout.as_slice()),
-                   "maidsafe-example.desktop\n".to_owned());
+        assert_eq!(
+            String::from_utf8_lossy(output.stdout.as_slice()),
+            "maidsafe-example.desktop\n".to_owned()
+        );
 
     }
 }
@@ -78,11 +80,13 @@ fn install_and_check() {
         let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
         let schema = format!("testschema{}", rng.gen::<u32>());
         println!("{:} for {}", exec, schema);
-        let app = App::new("net.maidsafe.example".to_string(),
-                           "MaidSafe".to_string(),
-                           "Example".to_string(),
-                           exec,
-                           None);
+        let app = App::new(
+            "net.maidsafe.example".to_string(),
+            "MaidSafe".to_string(),
+            "Example".to_string(),
+            exec,
+            None,
+        );
 
         assert!(install(&app, &[schema.clone()]).is_ok());
         check(&schema);

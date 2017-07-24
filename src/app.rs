@@ -32,12 +32,13 @@ pub struct App {
 
 impl App {
     /// create a new app
-    pub fn new(bundle_id: String,
-               vendor: String,
-               name: String,
-               exec: String,
-               icon: Option<String>)
-               -> Self {
+    pub fn new(
+        bundle_id: String,
+        vendor: String,
+        name: String,
+        exec: String,
+        icon: Option<String>,
+    ) -> Self {
         App {
             bundle_id: bundle_id,
             name: name,

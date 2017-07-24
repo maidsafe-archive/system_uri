@@ -28,11 +28,13 @@ use system_uri::{App, SystemUriError, install, open};
 fn install_and_open() -> Result<(), SystemUriError> {
     let mut rng = rand::thread_rng();
     let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
-    let app = App::new("net.maidsafe.example".to_string(),
-                       "MaidSafe Ltd.".to_string(),
-                       "Example R/W".to_string(),
-                       exec,
-                       None);
+    let app = App::new(
+        "net.maidsafe.example".to_string(),
+        "MaidSafe Ltd.".to_string(),
+        "Example R/W".to_string(),
+        exec,
+        None,
+    );
     let schema = format!("testschema{}", rng.gen::<u32>());
 
     println!("Installing ourselves under {}", schema);
@@ -53,8 +55,10 @@ fn install_and_open() -> Result<(), SystemUriError> {
 
 fn main() {
     if let Some(url) = env::args().nth(1) {
-        println!("Being started with {} as first parameter. Yay 🎉. Closing in 3",
-                 url);
+        println!(
+            "Being started with {} as first parameter. Yay 🎉. Closing in 3",
+            url
+        );
         thread::sleep(time::Duration::from_secs(1));
         println!("2");
         thread::sleep(time::Duration::from_secs(1));
