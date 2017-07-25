@@ -10,21 +10,21 @@ repository = "https://github.com/maidsafe/system_uri"
 version = "0.0.1"
 
 [dependencies]
-error-chain = "0.7.1"
-ffi_utils = { git = "https://github.com/maidsafe/safe_client_libs.git", branch = "dev", optional = true }
-libc  = { version= "0.2", optional = true }
+error-chain = "~0.10.0"
+ffi_utils = { git = "https://github.com/maidsafe/safe_client_libs.git", branch = "master", optional = true }
+libc  = { version = "~0.2.27", optional = true }
 
 [dev-dependencies]
-rand = "0.3.0"
+rand = "~0.3.15"
 
 [target.'cfg(target_os = "windows")'.dependencies]
-winreg = "0.4"
+winreg = "~0.4.0"
 
 [target.'cfg(target_os = "linux")'.dependencies]
-xdg-basedir = "1.0.0"
+xdg-basedir = "~1.0.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
-libc = "0.2"
+libc = "~0.2.27"
 
 [lib]
 crate_type = ["staticlib", "rlib", "cdylib"]

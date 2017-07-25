@@ -56,7 +56,7 @@
 #[macro_use]
 extern crate error_chain;
 
-#[cfg(any(target_os = "macos", feature="ffi"))]
+#[cfg(any(target_os = "macos", feature = "ffi"))]
 extern crate libc;
 
 #[cfg(target_os = "linux")]
@@ -111,5 +111,5 @@ mod macos;
 pub use macos::{install, open};
 
 /// Foreign Function call Interface to use this library
-#[cfg(feature="ffi")]
+#[cfg(feature = "ffi")]
 pub mod ffi;

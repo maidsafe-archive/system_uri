@@ -32,14 +32,17 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
     for protocol in schemes {
         let base_path = Path::new("Software").join("Classes").join(protocol);
-        let key = hkcu.create_subkey(&base_path)
-            .chain_err(|| "could not create subkey")?;
+        let key = hkcu.create_subkey(&base_path).chain_err(
+            || "could not create subkey",
+        )?;
         // set our app name as the for reference
-        key.set_value("", &app.name)
-            .chain_err(|| "could not set app name key")?;
+        key.set_value("", &app.name).chain_err(
+            || "could not set app name key",
+        )?;
         //
-        key.set_value("URL Protocol", &"")
-            .chain_err(|| "could set url protocol")?;
+        key.set_value("URL Protocol", &"").chain_err(
+            || "could set url protocol",
+        )?;
 
         let command_key = hkcu.create_subkey(&base_path.join("shell").join("open").join("command"))
             .chain_err(|| "could not execute open")?;
@@ -52,10 +55,9 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
 /// Open a given URI on Windows
 pub fn open(uri: String) -> Result<()> {
-    let _ = Command::new("explorer")
-        .arg(uri)
-        .status()
-        .chain_err(|| "Could not open 'explorere")?;
+    let _ = Command::new("explorer").arg(uri).status().chain_err(
+        || "Could not open 'explorere",
+    )?;
     // 'explorer' always comes back with a bad error code :(
     // but neither 'start' nor 'cmd /c start' seem to work...
     Ok(())
