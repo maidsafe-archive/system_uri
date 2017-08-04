@@ -7,15 +7,15 @@ license = "GPL-3.0"
 name = "system_uri"
 readme = "README.md"
 repository = "https://github.com/maidsafe/system_uri"
-version = "0.0.1"
+version = "0.1.0"
 
 [dependencies]
-error-chain = "~0.10.0"
+error-chain = "0.11.0-rc"
 ffi_utils = { git = "https://github.com/maidsafe/safe_client_libs.git", branch = "master", optional = true }
-libc  = { version = "~0.2.27", optional = true }
+libc  = { version = "~0.2.29", optional = true }
 
 [dev-dependencies]
-rand = "~0.3.15"
+rand = "~0.3.16"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 winreg = "~0.4.0"
@@ -24,7 +24,7 @@ winreg = "~0.4.0"
 xdg-basedir = "~1.0.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
-libc = "~0.2.27"
+libc = "~0.2.29"
 
 [lib]
 crate_type = ["staticlib", "rlib", "cdylib"]
