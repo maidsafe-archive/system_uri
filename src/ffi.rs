@@ -19,16 +19,21 @@
 
 use super::{App, install as rust_install, open as rust_open};
 use super::errors::*;
-use ffi_utils::{ErrorCode, catch_unwind_error_code};
+use ffi_utils::{ErrorCode, FfiResult, catch_unwind_cb};
 
 use libc::c_char;
 use std::ffi::CStr;
+use std::os::raw::c_void;
 
 
 /// open the given URI on this system
 #[no_mangle]
-pub unsafe extern "C" fn open(uri: *const c_char) -> i32 {
-    catch_unwind_error_code(|| {
+pub unsafe extern "C" fn open(
+    uri: *const c_char,
+    user_data: *mut c_void,
+    o_cb: extern "C" fn(*mut c_void, FfiResult),
+) {
+    catch_unwind_cb(user_data, o_cb, || {
         let uri = (CStr::from_ptr(uri).to_str()?).to_owned();
         rust_open(uri)
     })
@@ -44,8 +49,10 @@ pub unsafe extern "C" fn install(
     exec: *const c_char,
     icon: *const c_char,
     schemes: *const c_char,
-) -> i32 {
-    catch_unwind_error_code(|| {
+    user_data: *mut c_void,
+    o_cb: extern "C" fn(*mut c_void, FfiResult),
+) {
+    catch_unwind_cb(user_data, o_cb, || {
         let app = App::new(
             (CStr::from_ptr(bundle).to_str()?).to_owned(),
             (CStr::from_ptr(vendor).to_str()?).to_owned(),
