@@ -26,26 +26,34 @@ use std::process::Command;
 use xdg_basedir::dirs::get_data_home;
 
 /// Open a given URI on Linux systems
-pub fn open(uri: String) -> Result<()> {
-    let output = Command::new("xdg-open").arg(uri).output().chain_err(
-        || "Could not execute xdg-open",
-    )?;
+pub fn open<S: Into<String>>(uri: S) -> Result<()> {
+    let uri = uri.into();
+
+    let output = Command::new("xdg-open")
+        .arg(uri.clone())
+        .output()
+        .chain_err(|| "Could not execute xdg-open")?;
 
     if output.status.success() {
         Ok(())
     } else {
         Err(
-            ("Executing xdg-open failed. See terminal output for errors.").into(),
+            format!(
+                "Executing `xdg-open {}` failed: {}",
+                uri,
+                String::from_utf8_lossy(&output.stdout)
+            ).into(),
         )
     }
 
 }
 
+/// Clean URI for xdg-open
 fn clean_string(input: &str) -> String {
     input.replace(".", "").replace("/", "").to_ascii_lowercase()
 }
 
-/// register the given App for the given schemes on Linux
+/// Register the given App for the given schemes on Linux
 pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!(
@@ -70,7 +78,13 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     )?;
     let schemes_list = schemes
         .iter()
-        .map(|s| format!("x-scheme-handler/{}", s))
+        .map(|s| match s.matches(char::is_uppercase).next() {
+            Some(_) => {
+                println!("[WARN] system-uri: converting schema '{}' to lowercase", s);
+                format!("x-scheme-handler/{}", s.to_lowercase())
+            }
+            None => format!("x-scheme-handler/{}", s),
+        })
         .collect::<Vec<String>>();
 
     f.write_fmt(format_args!(
