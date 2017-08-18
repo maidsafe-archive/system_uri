@@ -21,6 +21,8 @@ extern crate rand;
 extern crate unwrap;
 
 use rand::Rng;
+#[cfg(target_os = "linux")]
+use std::ascii::AsciiExt;
 use std::env;
 #[cfg(target_os = "linux")]
 use std::process::Command;
@@ -31,9 +33,14 @@ use system_uri::open;
 
 #[cfg(target_os = "linux")]
 fn check(scheme: &str) {
+    let scheme = scheme
+        .replace(".", "")
+        .replace("/", "")
+        .to_ascii_lowercase();
+
     if env::var("TRAVIS").is_err() {
         println!("opening {}:test", scheme);
-        let _ = unwrap!(open(format!("{}://test", scheme)));
+        unwrap!(open(format!("{}://test", scheme)));
     } else {
         // in travis we can only check the configuration, but not open
         // as we don't actually have a desktop
