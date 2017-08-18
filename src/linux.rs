@@ -48,11 +48,12 @@ pub fn open<S: Into<String>>(uri: S) -> Result<()> {
 
 }
 
+/// Clean URI for xdg-open
 fn clean_string(input: &str) -> String {
     input.replace(".", "").replace("/", "").to_ascii_lowercase()
 }
 
-/// register the given App for the given schemes on Linux
+/// Register the given App for the given schemes on Linux
 pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!(

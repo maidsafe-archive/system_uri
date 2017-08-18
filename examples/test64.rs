@@ -46,7 +46,7 @@ fn install_and_open() -> Result<(), SystemUriError> {
 
     println!("Installing ourselves under {}", schema);
 
-    install(&app, &vec![schema.clone()]).and_then(|()| {
+    install(&app, &[schema.clone()]).and_then(|()| {
         println!("Install succeeded 😄");
 
         println!("Trying to open {}:testABC", schema);
@@ -59,7 +59,7 @@ fn install_and_open() -> Result<(), SystemUriError> {
 }
 
 fn main() {
-    if let Some(url) = env::args().skip(1).next() {
+    if let Some(url) = env::args().nth(1) {
         println!(
             "Being started with {} as first parameter. Yay 🎉. Closing in 3",
             url
