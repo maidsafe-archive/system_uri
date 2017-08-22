@@ -2,19 +2,28 @@ env:
   global:
     - RUST_BACKTRACE=1
     - PATH=$PATH:$HOME/.cargo/bin
-os:
-  - linux
-  - osx
 language: rust
-rust:
-  - 1.19.0
-  - nightly-2017-07-20
 addons:
   apt:
-    packages:
+    packages: &DEFAULT_PACKAGES
       - desktop-file-utils
       - xdg-utils
       - links
+matrix:
+  include:
+    - os: linux
+      rust: 1.19.0
+    - os: linux
+      rust: 1.19.0-i686-unknown-linux-gnu
+      addons:
+        apt:
+          packages:
+            - *DEFAULT_PACKAGES
+            - gcc-multilib
+    - os: linux
+      rust: nightly-2017-07-20
+    - os: osx
+      rust: 1.19.0
 sudo: false
 branches:
   only:
@@ -22,34 +31,73 @@ branches:
 cache:
   cargo: true
 before_script:
+  # Expected version change PR title format:
+  # Version changed to 0.2.2;
+  - if [[ $TRAVIS_COMMIT_MESSAGE =~ [Vv]ersion[[:space:]]changed[[:space:]]to[[:space:]]([^;]+) ]]; then
+      VERSION=v$(cargo pkgid | sed -e "s/.*[:#]\(.*\)/\1/");
+      if [[ "v${BASH_REMATCH[1]}" != $VERSION ]]; then
+        echo "Version mismatch between commit message and Cargo.toml.";
+        false;
+      fi;
+    else
+      VERSION=${TRAVIS_COMMIT:0:7};
+    fi
   - curl -sSL https://github.com/maidsafe/QA/raw/master/travis/cargo_install.sh > cargo_install.sh
   - bash cargo_install.sh cargo-prune;
-  - if [ "${TRAVIS_RUST_VERSION}" = 1.19.0 ]; then
+  - if [[ $TRAVIS_RUST_VERSION == 1.19.0 && $TRAVIS_OS_NAME = linux && $TRAVIS_EVENT_TYPE = pull_request ]]; then
       bash cargo_install.sh rustfmt 0.9.0;
-    elif [ "${TRAVIS_OS_NAME}" = linux ]; then
+    elif [[ $TRAVIS_RUST_VERSION =~ nightly && $TRAVIS_EVENT_TYPE = pull_request ]]; then
       bash cargo_install.sh clippy 0.0.144;
     fi
 script:
-  - if [ "${TRAVIS_RUST_VERSION}" = 1.19.0 ]; then
-      (
-        if [ "${TRAVIS_OS_NAME}" = linux ]; then
-          (
-            set -x;
-            cargo fmt -- --write-mode=diff &&
-            cargo test --release --verbose
-          );
-        else
-          (
-            set -x;
-            cargo test --release --verbose --no-run
-          );
-        fi
-      );
-    elif [ "${TRAVIS_OS_NAME}" = linux ]; then
-      (
-        set -x;
-        cargo clippy --profile test
-      );
+  - if [[ $TRAVIS_EVENT_TYPE = pull_request ]]; then
+      if [[ $TRAVIS_OS_NAME = osx ]]; then
+        cargo test --release --verbose --no-run;
+      elif [[ $TRAVIS_RUST_VERSION =~ nightly ]]; then
+        cargo clippy && cargo clippy --profile=test;
+      else
+        if [[ $TRAVIS_RUST_VERSION == 1.19.0 ]]; then
+          cargo fmt -- --write-mode=diff;
+        fi &&
+        cargo test --release --verbose;
+      fi
+    fi
+after_script:
+  - if [[ $TRAVIS_EVENT_TYPE = pull_request && -n $(git diff --shortstat 2> /dev/null | tail -n1) ]]; then
+      echo "Working tree is dirty after building.  Probably Cargo.lock should be updated.";
+      git status;
+      travis_terminate 1;
     fi
 before_cache:
   - cargo prune
+before_deploy:
+  - mkdir -p target/deploy
+  - if [[ $TRAVIS_RUST_VERSION =~ i686 ]]; then
+      ARCH=x86;
+    else
+      ARCH=x64;
+    fi
+  # We need to use `-x` on OS X since `strip` fails to remove global symbols from release builds on OS X.
+  - if [[ $TRAVIS_OS_NAME = linux ]]; then
+      SUFFIX=so;
+    else
+      SUFFIX=dylib STRIP_ARG=-x;
+    fi
+  - cargo build --verbose --release
+  - strip $STRIP_ARG target/release/libsystem_uri.$SUFFIX
+  - zip target/deploy/system_uri-$VERSION-$TRAVIS_OS_NAME-$ARCH.zip target/release/libsystem_uri.$SUFFIX
+deploy:
+  provider: s3
+  access_key_id: AKIAIA2TXTG7EV5VIG2Q
+  secret_access_key:
+    secure: qEDay6TCAy3tBLqLYFOx9OjAdoRl010paK2//teFETfwUfJA/RtNSfkp1yrgx+kZ3FO8cthdDnwR3zjM3pkCL+5mGkQMAgvRY7rcEB5H1VyO4jkZRoB4n/yUu5jB4dHdeeRWTOJxNOOPA0G1Q65LLkJql2JGoJatqE3pBmJm0X8=
+  bucket: system-uri
+  local-dir: target/deploy
+  acl: public_read
+  region: eu-west-2
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: false
+    condition: $TRAVIS_RUST_VERSION =~ 1.19.0 && $TRAVIS_EVENT_TYPE = push
+after_deploy: rm -rf target/deploy
