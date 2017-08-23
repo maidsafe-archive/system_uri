@@ -60,8 +60,8 @@ test_script:
 before_deploy:
   - cargo build --verbose --release
   - strip target\release\system_uri.dll
-  - ps: |
-        Push-AppveyorArtifact target\release\system_uri.dll -FileName system_uri-$env:VERSION-win-$env:PLATFORM.zip
+  - 7z a -mx9 system_uri-%VERSION%-win-%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\target\release\system_uri.dll
+  - appveyor PushArtifact system_uri-%VERSION%-win-%PLATFORM%.zip
 
 deploy:
   provider: S3
