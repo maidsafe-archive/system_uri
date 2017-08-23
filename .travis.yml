@@ -85,7 +85,7 @@ before_deploy:
     fi
   - cargo build --verbose --release
   - strip $STRIP_ARG target/release/libsystem_uri.$SUFFIX
-  - zip target/deploy/system_uri-$VERSION-$TRAVIS_OS_NAME-$ARCH.zip target/release/libsystem_uri.$SUFFIX
+  - zip -j target/deploy/system_uri-$VERSION-$TRAVIS_OS_NAME-$ARCH.zip target/release/libsystem_uri.$SUFFIX
 deploy:
   provider: s3
   access_key_id: AKIAIA2TXTG7EV5VIG2Q
