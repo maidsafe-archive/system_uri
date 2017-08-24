@@ -7,7 +7,7 @@ license = "GPL-3.0"
 name = "system_uri"
 readme = "README.md"
 repository = "https://github.com/maidsafe/system_uri"
-version = "0.2.0"
+version = "0.2.1"
 
 [dependencies]
 error-chain = "0.11.0-rc"

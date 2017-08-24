@@ -32,8 +32,8 @@ cache:
   cargo: true
 before_script:
   # Expected version change PR title format:
-  # Version changed to 0.2.2;
-  - if [[ $TRAVIS_COMMIT_MESSAGE =~ [Vv]ersion[[:space:]]changed[[:space:]]to[[:space:]]([^;]+) ]]; then
+  # Version change to 0.2.2;
+  - if [[ $TRAVIS_COMMIT_MESSAGE =~ [Vv]ersion[[:space:]]change[[:space:]]to[[:space:]]([^;]+) ]]; then
       VERSION=v$(cargo pkgid | sed -e "s/.*[:#]\(.*\)/\1/");
       if [[ "v${BASH_REMATCH[1]}" != $VERSION ]]; then
         echo "Version mismatch between commit message and Cargo.toml.";
