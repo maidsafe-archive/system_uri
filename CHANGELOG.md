@@ -1,5 +1,8 @@
 # System URI - Change Log
 
+## [0.2.1]
+- Change the format of version changing PR titles to not be a past-tense
+
 ## [0.2.0]
 - Deploy to AWS
 - Correct Linux schema casing to lower case

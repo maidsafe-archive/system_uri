@@ -32,7 +32,7 @@ skip_tags: true
 before_build:
   - ps: |
         $COMMIT_MESSAGE = "$env:APPVEYOR_REPO_COMMIT_MESSAGE $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED"
-        if ($COMMIT_MESSAGE -match "[Vv]ersion changed to ([^;]+)") {
+        if ($COMMIT_MESSAGE -match "[Vv]ersion change to ([^;]+)") {
           $COMMIT_MESSAGE_VERSION = "v" + $Matches[1]
           $env:VERSION = (cargo pkgid) -Replace '.*[:#](.*)', 'v$1'
           if ($COMMIT_MESSAGE_VERSION -ne $env:VERSION) {
