@@ -7,11 +7,11 @@ license = "GPL-3.0"
 name = "system_uri"
 readme = "README.md"
 repository = "https://github.com/maidsafe/system_uri"
-version = "0.2.1"
+version = "0.2.2"
 
 [dependencies]
 error-chain = "0.11.0-rc"
-ffi_utils = { version = "~0.2.0", optional = true }
+ffi_utils = { version = "~0.3.0", optional = true }
 libc  = { version = "~0.2.29", optional = true }
 
 [dev-dependencies]

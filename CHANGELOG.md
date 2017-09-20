@@ -1,5 +1,8 @@
 # System URI - Change Log
 
+## [0.2.2]
+- Update `ffi_utils` to 0.3.0
+
 ## [0.2.1]
 - Change the format of version changing PR titles to not be a past-tense
 
