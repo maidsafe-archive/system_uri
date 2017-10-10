@@ -19,7 +19,7 @@
 
 use super::{App, install as rust_install, open as rust_open};
 use super::errors::*;
-use ffi_utils::{ErrorCode, FfiResult, catch_unwind_cb};
+use ffi_utils::{ErrorCode, FFI_RESULT_OK, FfiResult, catch_unwind_cb};
 
 use libc::c_char;
 use std::ffi::CStr;
@@ -33,9 +33,11 @@ pub unsafe extern "C" fn open(
     user_data: *mut c_void,
     o_cb: extern "C" fn(*mut c_void, FfiResult),
 ) {
-    catch_unwind_cb(user_data, o_cb, || {
+    catch_unwind_cb(user_data, o_cb, || -> Result<()> {
         let uri = (CStr::from_ptr(uri).to_str()?).to_owned();
-        rust_open(uri)
+        rust_open(uri)?;
+        o_cb(user_data, FFI_RESULT_OK);
+        Ok(())
     })
 }
 
@@ -52,7 +54,7 @@ pub unsafe extern "C" fn install(
     user_data: *mut c_void,
     o_cb: extern "C" fn(*mut c_void, FfiResult),
 ) {
-    catch_unwind_cb(user_data, o_cb, || {
+    catch_unwind_cb(user_data, o_cb, || -> Result<()> {
         let app = App::new(
             (CStr::from_ptr(bundle).to_str()?).to_owned(),
             (CStr::from_ptr(vendor).to_str()?).to_owned(),
@@ -69,7 +71,9 @@ pub unsafe extern "C" fn install(
                 .split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<_>>(),
-        )
+        )?;
+        o_cb(user_data, FFI_RESULT_OK);
+        Ok(())
     })
 }
 
