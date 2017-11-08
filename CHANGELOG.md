@@ -1,5 +1,8 @@
 # System URI - Change Log
 
+## [0.3.0]
+- Rename `open` to `open_uri`.
+
 ## [0.2.3]
 - Fix success callback invocation in the `open` and `install` FFI functions
 - Fix the `install` function on Windows: `exec` call parameters weren't quoted and didn't work properly
