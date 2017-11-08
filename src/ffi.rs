@@ -28,7 +28,7 @@ use std::os::raw::c_void;
 
 /// Open the given URI on this system.
 #[no_mangle]
-pub unsafe extern "C" fn open(
+pub unsafe extern "C" fn open_uri(
     uri: *const c_char,
     user_data: *mut c_void,
     o_cb: extern "C" fn(*mut c_void, FfiResult),
