@@ -57,7 +57,7 @@ script:
         if [[ $TRAVIS_RUST_VERSION == 1.22.1 ]]; then
           cargo fmt -- --write-mode=diff;
         fi &&
-        cargo test --release --verbose;
+        cargo test --release --verbose -- --test-threads=1;
       fi
     fi
 after_script:

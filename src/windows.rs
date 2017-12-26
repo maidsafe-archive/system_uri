@@ -72,10 +72,7 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
         let command_key = hkcu.create_subkey(&base_path.join("shell").join("open").join("command"))
             .chain_err(|| "could not execute open")?;
         command_key
-            .set_value(
-                "",
-                &format!("\"{}\" \"%1\"", app.exec.replace(" ", "\" \"")),
-            )
+            .set_value("", &format!("{} \"%1\"", app.exec))
             .chain_err(|| "could not create subkey")?
     }
     Ok(())
