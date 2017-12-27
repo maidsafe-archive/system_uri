@@ -17,8 +17,6 @@
 
 extern crate system_uri;
 extern crate rand;
-#[macro_use]
-extern crate unwrap;
 
 use rand::Rng;
 #[cfg(target_os = "linux")]
