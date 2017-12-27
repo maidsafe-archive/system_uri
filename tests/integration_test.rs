@@ -17,6 +17,8 @@
 
 extern crate system_uri;
 extern crate rand;
+#[macro_use]
+extern crate unwrap;
 
 use rand::Rng;
 #[cfg(target_os = "linux")]
@@ -83,7 +85,7 @@ fn install_and_check() {
     } else {
         // directly called, let's do the testing
         let mut rng = rand::thread_rng();
-        let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
+        let exec = String::from(unwrap!(unwrap!(std::env::current_exe()).to_str()));
         let schema = format!("testschema-ABC-{}", rng.gen::<u32>());
         println!("{:} for {}", exec, schema);
         let app = App::new(

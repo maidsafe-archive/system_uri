@@ -18,6 +18,7 @@
 use app::App;
 
 use errors::*;
+#[allow(unused_imports)] // FIXME: this hides an unused-import warning; seems to be a bug in nightly
 use std::ascii::AsciiExt;
 use std::fs::{File, create_dir_all};
 use std::io::Write;
