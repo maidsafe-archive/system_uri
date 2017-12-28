@@ -60,7 +60,7 @@ fn convert_to_cfstring(content: &str) -> CFStringRef {
             kCFAllocatorDefault,
             content.as_ptr(),
             content.len() as CFIndex,
-            0x08000100 as CFStringEncoding,
+            0x0800_0100 as CFStringEncoding,
             false as u8,
             kCFAllocatorNull,
         )
@@ -68,7 +68,7 @@ fn convert_to_cfstring(content: &str) -> CFStringRef {
 }
 
 
-/// Open a given URI on MacOSX systems
+/// Open a given URI on Mac OSX systems
 pub fn open(uri: String) -> Result<()> {
     let output = Command::new("open").arg(uri).output().chain_err(
         || "Could not execute open",
@@ -78,12 +78,12 @@ pub fn open(uri: String) -> Result<()> {
         Ok(())
     } else {
         Err(
-            format!("Executing open failed. See terminal output for errors.").into(),
+            "Executing open failed. See terminal output for errors.".into(),
         )
     }
 }
 
-/// register the given App for the given schemes on MacOSX
+/// register the given App for the given schemes on Mac OSX
 pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let bundle_id = convert_to_cfstring(app.bundle_id.as_str());
     for scheme in schemes {
