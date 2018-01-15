@@ -55,7 +55,7 @@ after_build:
         }
 
 test_script:
-  - cargo test --verbose --release
+  - cargo test --verbose --release -- --test-threads=1
 
 before_deploy:
   - cargo build --verbose --release

@@ -19,7 +19,8 @@
 
 use super::{App, install as rust_install, open as rust_open};
 use super::errors::*;
-use ffi_utils::{ErrorCode, FFI_RESULT_OK, FfiResult, catch_unwind_cb};
+use ffi_utils::{ErrorCode, FFI_RESULT_OK, FfiResult, catch_unwind_cb, from_c_str,
+                vec_clone_from_raw_parts};
 
 use libc::c_char;
 use std::ffi::CStr;
@@ -34,7 +35,7 @@ pub unsafe extern "C" fn open_uri(
     o_cb: extern "C" fn(*mut c_void, *const FfiResult),
 ) {
     catch_unwind_cb(user_data, o_cb, || -> Result<()> {
-        let uri = (CStr::from_ptr(uri).to_str()?).to_owned();
+        let uri = from_c_str(uri)?;
         rust_open(uri)?;
         o_cb(user_data, FFI_RESULT_OK);
         Ok(())
@@ -48,26 +49,33 @@ pub unsafe extern "C" fn install(
     bundle: *const c_char,
     vendor: *const c_char,
     name: *const c_char,
-    exec: *const c_char,
+    exec_args: *const *const c_char,
+    exec_args_len: usize,
     icon: *const c_char,
     schemes: *const c_char,
     user_data: *mut c_void,
     o_cb: extern "C" fn(*mut c_void, *const FfiResult),
 ) {
     catch_unwind_cb(user_data, o_cb, || -> Result<()> {
+        let mut exec = String::new();
+        let args = vec_clone_from_raw_parts(exec_args, exec_args_len);
+        for arg in args {
+            let arg_str = format!("\"{}\" ", CStr::from_ptr(arg).to_str()?);
+            exec.push_str(&arg_str);
+        }
         let app = App::new(
-            (CStr::from_ptr(bundle).to_str()?).to_owned(),
-            (CStr::from_ptr(vendor).to_str()?).to_owned(),
-            (CStr::from_ptr(name).to_str()?).to_owned(),
-            (CStr::from_ptr(exec).to_str()?).to_owned(),
-            Some((CStr::from_ptr(icon).to_str()?).to_owned()),
+            from_c_str(bundle)?,
+            from_c_str(vendor)?,
+            from_c_str(name)?,
+            exec.trim_right().to_owned(),
+            Some(from_c_str(icon)?),
         );
 
-        let schemes = (CStr::from_ptr(schemes).to_str()?).to_owned();
+        let schemes_str = from_c_str(schemes)?;
 
         rust_install(
             &app,
-            &schemes
+            &schemes_str
                 .split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<_>>(),
