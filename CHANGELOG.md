@@ -1,5 +1,11 @@
 # System URI - Change Log
 
+## [0.4.0]
+- Use pointers instead of passing plain structures (e.g. for `FfiResult`)
+- Change the `install` function to take the `exec` command as an array of arguments rather than string
+- Use rust 1.22.1 stable / 2017-12-03 nightly
+- rustfmt 0.9.0 and clippy-0.0.175
+
 ## [0.3.0]
 - Rename `open` to `open_uri`.
 
