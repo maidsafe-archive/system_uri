@@ -26,7 +26,7 @@ use std::path::PathBuf;
 use std::process::Command;
 use xdg_basedir::dirs::get_data_home;
 
-/// Open a given URI on Linux systems
+/// Open a given URI.
 pub fn open<S: Into<String>>(uri: S) -> Result<()> {
     let uri = uri.into();
 
@@ -49,12 +49,15 @@ pub fn open<S: Into<String>>(uri: S) -> Result<()> {
 
 }
 
-/// Clean URI for xdg-open
+/// Clean URI for xdg-open.
 fn clean_string(input: &str) -> String {
     input.replace(".", "").replace("/", "").to_ascii_lowercase()
 }
 
-/// Register the given App for the given schemes on Linux
+/// Register the given App for the given schemes.
+///
+/// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
+/// provide a list of schemes (the initial part of a URI, like `https`).
 pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!(

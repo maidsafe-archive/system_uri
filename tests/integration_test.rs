@@ -24,7 +24,6 @@ extern crate unwrap;
 use rand::Rng;
 #[cfg(target_os = "linux")]
 use std::ascii::AsciiExt;
-use std::env;
 #[cfg(target_os = "linux")]
 use std::process::Command;
 
@@ -43,7 +42,7 @@ fn check(scheme: &str, vendor: &str, name: &str) {
     let vendor = clean_string(vendor);
     let name = clean_string(name);
 
-    if env::var("TRAVIS").is_err() {
+    if std::env::var("TRAVIS").is_err() {
         println!("opening {}:test", scheme);
         unwrap!(open(format!("{}://test", scheme)));
     } else {
@@ -170,5 +169,5 @@ fn ffi_install_and_check() {
             )
         }))
     };
-    check(&schema, &vendor, &app_name);
+    check(&schema, vendor, app_name);
 }
