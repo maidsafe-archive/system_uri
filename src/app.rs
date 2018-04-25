@@ -15,23 +15,25 @@
 // Please review the Licences for the specific language governing permissions and limitations
 // relating to use of the SAFE Network Software.
 
-#[derive(Debug)]
-/// The internal structure for an App
+/// The internal structure for an App. All fields are required in order to support Linux, OSX, and
+/// Windows.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct App {
-    /// our apps bundle_id
+    /// Our apps bundle ID. On OSX, applications must be packaged as bundles in order to register a
+    /// custom URI.
     pub bundle_id: String,
-    /// path to execute, including optional parameters
+    /// Path to execute, including optional parameters.
     pub exec: String,
-    /// What's the vendor?
+    /// Vendor name.
     pub vendor: String,
-    /// the display name of the application
+    /// The display name of the application.
     pub name: String,
-    /// an optional icon, only supported on some platforms
+    /// An optional icon, only supported on some platforms.
     pub icon: Option<String>,
 }
 
 impl App {
-    /// create a new app
+    /// Create a new app.
     pub fn new(
         bundle_id: String,
         vendor: String,

@@ -68,7 +68,7 @@ fn convert_to_cfstring(content: &str) -> CFStringRef {
 }
 
 
-/// Open a given URI on Mac OSX systems
+/// Open a given URI.
 pub fn open(uri: String) -> Result<()> {
     let output = Command::new("open").arg(uri).output().chain_err(
         || "Could not execute open",
@@ -83,7 +83,10 @@ pub fn open(uri: String) -> Result<()> {
     }
 }
 
-/// register the given App for the given schemes on Mac OSX
+/// Register the given App for the given schemes.
+///
+/// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
+/// provide a list of schemes (the initial part of a URI, like `https`).
 pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     let bundle_id = convert_to_cfstring(app.bundle_id.as_str());
     for scheme in schemes {

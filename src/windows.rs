@@ -51,7 +51,10 @@ extern "system" {
 
 
 // as described at https://msdn.microsoft.com/en-us/library/aa767914(v=vs.85).aspx
-/// register the given App for the given schemes on Windows
+/// Register the given App for the given schemes.
+///
+/// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
+/// provide a list of schemes (the initial part of a URI, like `https`).
 pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     // but we can't write on root, we'll have to do it for the curent user only
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
@@ -78,7 +81,7 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// Open a given URI on Windows
+/// Open a given URI.
 #[allow(unsafe_code)]
 pub fn open(uri: String) -> Result<()> {
     let err = unsafe {
