@@ -33,10 +33,10 @@
         unused_parens, while_true)]
 #![warn(trivial_casts, trivial_numeric_casts, unused_extern_crates, unused_import_braces,
         unused_qualifications, unused_results)]
+// TODO: Remove `renamed_and_removed_lints` once
+// https://github.com/rust-lang-nursery/error-chain/pull/246 has been fixed.
 #![allow(box_pointers, missing_copy_implementations, missing_debug_implementations,
-         variant_size_differences)]
-// to be removed when unused_doc_comments lints is merged
-#![allow(unknown_lints)]
+         variant_size_differences, renamed_and_removed_lints)]
 
 #![cfg_attr(feature="clippy", feature(plugin))]
 #![cfg_attr(feature="clippy", plugin(clippy))]

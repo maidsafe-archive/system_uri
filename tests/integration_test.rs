@@ -15,8 +15,6 @@ extern crate unwrap;
 
 use rand::Rng;
 #[cfg(target_os = "linux")]
-use std::ascii::AsciiExt;
-#[cfg(target_os = "linux")]
 use std::process::Command;
 
 use system_uri::{App, install};
