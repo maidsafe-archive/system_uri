@@ -9,15 +9,15 @@
 
 #![allow(unsafe_code)]
 
-use super::{App, install as rust_install, open as rust_open};
 use super::errors::*;
-use ffi_utils::{ErrorCode, FFI_RESULT_OK, FfiResult, catch_unwind_cb, from_c_str,
-                vec_clone_from_raw_parts};
+use super::{install as rust_install, open as rust_open, App};
+use ffi_utils::{
+    catch_unwind_cb, from_c_str, vec_clone_from_raw_parts, ErrorCode, FfiResult, FFI_RESULT_OK,
+};
 
 use libc::c_char;
 use std::ffi::CStr;
 use std::os::raw::c_void;
-
 
 /// Open the given URI on this system.
 #[no_mangle]

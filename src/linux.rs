@@ -10,7 +10,7 @@
 use app::App;
 
 use errors::*;
-use std::fs::{File, create_dir_all};
+use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
@@ -28,15 +28,12 @@ pub fn open<S: Into<String>>(uri: S) -> Result<()> {
     if output.status.success() {
         Ok(())
     } else {
-        Err(
-            format!(
-                "Executing `xdg-open {}` failed: {}",
-                uri,
-                String::from_utf8_lossy(&output.stdout)
-            ).into(),
-        )
+        Err(format!(
+            "Executing `xdg-open {}` failed: {}",
+            uri,
+            String::from_utf8_lossy(&output.stdout)
+        ).into())
     }
-
 }
 
 /// Clean URI for xdg-open.
@@ -62,14 +59,11 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
     let apps_dir = desktop_target.clone();
 
-    create_dir_all(apps_dir.clone()).chain_err(
-        || "Could not create app directory",
-    )?;
+    create_dir_all(apps_dir.clone()).chain_err(|| "Could not create app directory")?;
 
     desktop_target.push(ascii_name.clone());
-    let mut f = File::create(desktop_target.as_path()).chain_err(
-        || "Could not create app desktop file",
-    )?;
+    let mut f =
+        File::create(desktop_target.as_path()).chain_err(|| "Could not create app desktop file")?;
     let schemes_list = schemes
         .iter()
         .map(|s| match s.matches(char::is_uppercase).next() {
@@ -94,7 +88,6 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
         .status()
         .chain_err(|| "Could not run update-desktop-database")?;
 
-
     for scheme in schemes_list {
         let _ = Command::new("xdg-mime")
             .arg("default")
@@ -107,8 +100,6 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
     if status.success() {
         Ok(())
     } else {
-        Err(
-            ("Executing update-desktop-database failed. See terminal output for errors.").into(),
-        )
+        Err(("Executing update-desktop-database failed. See terminal output for errors.").into())
     }
 }
