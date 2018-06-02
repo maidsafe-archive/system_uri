@@ -34,11 +34,11 @@ impl App {
         icon: Option<String>,
     ) -> Self {
         App {
-            bundle_id: bundle_id,
-            name: name,
-            vendor: vendor,
-            exec: exec,
-            icon: icon,
+            bundle_id,
+            name,
+            vendor,
+            exec,
+            icon,
         }
     }
 }

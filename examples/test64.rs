@@ -7,18 +7,17 @@
 // specific language governing permissions and limitations relating to use of the SAFE Network
 // Software.
 
-extern crate system_uri;
-extern crate rand;
 extern crate ffi_utils;
+extern crate rand;
+extern crate system_uri;
 
 use ffi_utils::base64_encode;
 use rand::Rng;
-use std::{thread, time};
 use std::env;
 use std::process::exit;
+use std::{thread, time};
 
-
-use system_uri::{App, SystemUriError, install, open};
+use system_uri::{install, open, App, SystemUriError};
 
 fn install_and_open() -> Result<(), SystemUriError> {
     let mut rng = rand::thread_rng();

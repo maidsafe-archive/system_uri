@@ -23,7 +23,6 @@ type CFAllocatorRef = *const libc::c_void;
 type CFIndex = libc::c_long;
 type CFStringEncoding = u32;
 
-
 #[link(name = "CoreFoundation", kind = "framework")]
 extern "C" {
     static kCFAllocatorDefault: CFAllocatorRef;
@@ -38,12 +37,10 @@ extern "C" {
     ) -> CFStringRef;
 }
 
-
 #[link(name = "CoreServices", kind = "framework")]
 extern "C" {
     fn LSSetDefaultHandlerForURLScheme(scheme: CFStringRef, bundle_id: CFStringRef);
 }
-
 
 // helper to hand over strings to macos
 fn convert_to_cfstring(content: &str) -> CFStringRef {
@@ -59,19 +56,17 @@ fn convert_to_cfstring(content: &str) -> CFStringRef {
     }
 }
 
-
 /// Open a given URI.
 pub fn open(uri: String) -> Result<()> {
-    let output = Command::new("open").arg(uri).output().chain_err(
-        || "Could not execute open",
-    )?;
+    let output = Command::new("open")
+        .arg(uri)
+        .output()
+        .chain_err(|| "Could not execute open")?;
 
     if output.status.success() {
         Ok(())
     } else {
-        Err(
-            "Executing open failed. See terminal output for errors.".into(),
-        )
+        Err("Executing open failed. See terminal output for errors.".into())
     }
 }
 

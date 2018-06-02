@@ -7,15 +7,15 @@
 // specific language governing permissions and limitations relating to use of the SAFE Network
 // Software.
 
-extern crate system_uri;
 extern crate rand;
+extern crate system_uri;
 
 use rand::Rng;
-use std::{thread, time};
 use std::env;
 use std::process::exit;
+use std::{thread, time};
 
-use system_uri::{App, SystemUriError, install, open};
+use system_uri::{install, open, App, SystemUriError};
 
 fn install_and_open() -> Result<(), SystemUriError> {
     let mut rng = rand::thread_rng();
@@ -31,9 +31,7 @@ fn install_and_open() -> Result<(), SystemUriError> {
 
     println!("Installing ourselves under {}", schema);
 
-
     install(&app, &[schema.clone()]).and_then(|()| {
-
         println!("Install succeeded 😄");
 
         println!("Trying to open {}:test", schema);

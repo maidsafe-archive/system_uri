@@ -7,21 +7,19 @@
 // specific language governing permissions and limitations relating to use of the SAFE Network
 // Software.
 
-extern crate system_uri;
 extern crate ffi_utils;
 extern crate rand;
+extern crate system_uri;
 #[macro_use]
 extern crate unwrap;
 
 use rand::Rng;
 #[cfg(target_os = "linux")]
-use std::ascii::AsciiExt;
-#[cfg(target_os = "linux")]
 use std::process::Command;
 
-use system_uri::{App, install};
 #[cfg(not(target_os = "macos"))]
 use system_uri::open;
+use system_uri::{install, App};
 
 #[cfg(target_os = "linux")]
 fn clean_string(input: &str) -> String {
@@ -57,17 +55,14 @@ fn check(scheme: &str, vendor: &str, name: &str) {
             String::from_utf8_lossy(output.stdout.as_slice()),
             scheme_handler_name.to_owned()
         );
-
     }
 }
-
 
 #[cfg(target_os = "macos")]
 fn check(_: &str, _: &str, _: &str) {
     // unfortunately registration won't work in mac unless we have a bundle
     assert!(true);
 }
-
 
 #[cfg(target_os = "windows")]
 fn check(scheme: &str, _: &str, _: &str) {
@@ -120,10 +115,10 @@ fn exec_multiple_args() {
 
 #[test]
 fn ffi_install_and_check() {
-    use system_uri::ffi::install as ffi_install;
-    use std::ffi::CString;
     use ffi_utils::test_utils::call_0;
+    use std::ffi::CString;
     use std::os::raw::c_char;
+    use system_uri::ffi::install as ffi_install;
 
     let exec = unwrap!(unwrap!(std::env::current_exe()).to_str()).to_owned();
     // let's copy the executable to a path
@@ -147,19 +142,17 @@ fn ffi_install_and_check() {
     args_vec.push(arg2.as_ptr());
 
     unsafe {
-        unwrap!(call_0(|user_data, callback| {
-            ffi_install(
-                bundle_str.as_ptr(),
-                vendor_str.as_ptr(),
-                app_name_str.as_ptr(),
-                args_vec.as_ptr() as *const *const c_char,
-                args_vec.len(),
-                icon.as_ptr(),
-                schema_cstr.as_ptr(),
-                user_data,
-                callback,
-            )
-        }))
+        unwrap!(call_0(|user_data, callback| ffi_install(
+            bundle_str.as_ptr(),
+            vendor_str.as_ptr(),
+            app_name_str.as_ptr(),
+            args_vec.as_ptr() as *const *const c_char,
+            args_vec.len(),
+            icon.as_ptr(),
+            schema_cstr.as_ptr(),
+            user_data,
+            callback,
+        )))
     };
     check(&schema, vendor, app_name);
 }
