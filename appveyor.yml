@@ -2,7 +2,8 @@ environment:
   global:
     RUST_BACKTRACE: 1
   matrix:
-    - RUST_TOOLCHAIN: 1.26.1
+    - RUST_STABLE: &stable "1.26.2"
+    - RUST_TOOLCHAIN: *stable
 
 branches:
   only:
@@ -74,4 +75,4 @@ deploy:
   artifact: /.*\.zip/
   on:
     branch: master
-    RUST_TOOLCHAIN: 1.26.1
+    RUST_TOOLCHAIN: *stable
