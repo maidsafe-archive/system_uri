@@ -72,8 +72,7 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
                 format!("x-scheme-handler/{}", s.to_lowercase())
             }
             None => format!("x-scheme-handler/{}", s),
-        })
-        .collect::<Vec<String>>();
+        }).collect::<Vec<String>>();
 
     f.write_fmt(format_args!(
         include_str!("./template.desktop"),

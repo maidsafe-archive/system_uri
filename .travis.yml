@@ -1,15 +1,15 @@
 vars:
-  - &stable "1.26.2"
-  - &stable-i686 "1.26.2-i686-unknown-linux-gnu"
-  - &nightly "nightly-2018-06-10"
+  - &stable "1.28.0"
+  - &stable-i686 "1.28.0-i686-unknown-linux-gnu"
+  - &nightly "nightly-2018-07-07"
 env:
   global:
     - RUST_BACKTRACE=1
     - PATH=$PATH:$HOME/.cargo/bin
-    - RUST_STABLE=1.26.2
-    - RUST_NIGHTLY=nightly-2018-06-10
-    - RUST_RUSTFMT=0.8.2
-    - RUST_CLIPPY=0.0.207
+    - RUST_STABLE=1.28.0
+    - RUST_NIGHTLY=nightly-2018-07-07
+    - RUST_RUSTFMT=0.99.2
+    - RUST_CLIPPY=0.0.212
 language: rust
 addons:
   apt:
