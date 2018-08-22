@@ -2,8 +2,6 @@
 
 Desktop System App URI registration handler
 
-**Maintainer:** Spandan Sharma (spandan.sharma@maidsafe.net)
-
 |Crate|Documentation|Linux/OS X|Windows|Issues|
 |:---:|:-----------:|:--------:|:-----:|:----:|
 |[![](http://meritbadge.herokuapp.com/system_uri)](https://crates.io/crates/system_uri)|[![Documentation](https://docs.rs/system_uri/badge.svg)](https://docs.rs/system_uri)|[![Build Status](https://travis-ci.org/maidsafe/system_uri.svg?branch=master)](https://travis-ci.org/maidsafe/system_uri)|[![Build status](https://ci.appveyor.com/api/projects/status/qpnwete63eakcipn/branch/master?svg=true)](https://ci.appveyor.com/project/MaidSafe-QA/system-uri/branch/master)|[![Stories in Ready](https://badge.waffle.io/maidsafe/system_uri.png?label=ready&title=Ready)](https://waffle.io/maidsafe/system_uri)|
