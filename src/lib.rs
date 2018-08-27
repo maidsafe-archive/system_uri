@@ -126,6 +126,11 @@ mod errors {
                 display("Utf-8 error: {}", error)
                 from()
             }
+            /// XDG error.
+            XdgOpenError(uri: String, stdout: String) {
+                description(uri)
+                display("Executing `xdg-open {}` failed: {}", uri, stdout)
+            }
             /// Unexpected error.
             Unexpected(s: &'static str) {
                 description(s)
