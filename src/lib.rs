@@ -83,11 +83,9 @@
     feature = "clippy",
     allow(use_debug, too_many_arguments, needless_return)
 )]
-// `error_chain!` can recurse deeply
-#![recursion_limit = "1024"]
 
 #[macro_use]
-extern crate error_chain;
+extern crate quick_error;
 
 #[cfg(any(target_os = "macos", feature = "ffi"))]
 extern crate libc;
@@ -102,22 +100,37 @@ mod app;
 pub use app::App;
 
 mod errors {
+    use ffi_utils::StringError;
+    use std::io;
     use std::str::Utf8Error;
 
-    error_chain! {
-        types {
-            Error, ErrorKind, ChainErr, Result;
-        }
-
-        foreign_links {
-            Utf8Error(Utf8Error);
-        }
-
-        errors {
-            /// The SystemURI error used to wrap problems
-            SystemUriError(t: String) {
-                description("System URI Error")
-                display("Could not execute: {}", t)
+    quick_error! {
+        /// System URI error variants.
+        #[derive(Debug)]
+        pub enum Error {
+            /// IO error.
+            IoError(error: io::Error) {
+                description("Io error")
+                display("I/O error: {}", error)
+                from()
+            }
+            /// String error.
+            StringError(error: StringError) {
+                description("String error")
+                display("String error: {:?}", error)
+                from()
+            }
+            /// Utf-8 error.
+            Utf8Error(error: Utf8Error) {
+                description(error.description())
+                display("Utf-8 error: {}", error)
+                from()
+            }
+            /// Unexpected error.
+            Unexpected(s: &'static str) {
+                description(s)
+                display("Unexpected error: {}", s)
+                from()
             }
         }
     }

@@ -9,7 +9,7 @@
 
 use app::App;
 
-use errors::*;
+use errors::Error;
 use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::PathBuf;
@@ -17,7 +17,7 @@ use std::process::Command;
 use xdg_basedir::dirs::get_data_home;
 
 /// Open a given URI.
-pub fn open<S: Into<String>>(uri: S) -> Result<()> {
+pub fn open<S: Into<String>>(uri: S) -> Result<(), Error> {
     let uri = uri.into();
 
     let output = Command::new("xdg-open")
@@ -45,7 +45,7 @@ fn clean_string(input: &str) -> String {
 ///
 /// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
 /// provide a list of schemes (the initial part of a URI, like `https`).
-pub fn install(app: &App, schemes: &[String]) -> Result<()> {
+pub fn install(app: &App, schemes: &[String]) -> Result<(), Error> {
     let home = get_data_home().chain_err(|| "Home directory not found")?;
     let ascii_name = format!(
         "{}-{}.desktop",

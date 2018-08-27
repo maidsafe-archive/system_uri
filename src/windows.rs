@@ -16,7 +16,7 @@ use self::winreg::enums::HKEY_CURRENT_USER;
 use self::winreg::RegKey;
 use app::App;
 
-use errors::*;
+use errors::Error;
 use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;
 use std::path::Path;
@@ -46,7 +46,7 @@ extern "system" {
 ///
 /// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
 /// provide a list of schemes (the initial part of a URI, like `https`).
-pub fn install(app: &App, schemes: &[String]) -> Result<()> {
+pub fn install(app: &App, schemes: &[String]) -> Result<(), Error> {
     // but we can't write on root, we'll have to do it for the curent user only
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
     for protocol in schemes {
@@ -73,7 +73,7 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
 /// Open a given URI.
 #[allow(unsafe_code)]
-pub fn open(uri: String) -> Result<()> {
+pub fn open(uri: String) -> Result<(), Error> {
     let err = unsafe {
         ShellExecuteW(
             ptr::null_mut(),
