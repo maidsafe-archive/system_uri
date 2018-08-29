@@ -66,7 +66,7 @@ fn check(_: &str, _: &str, _: &str) {
 
 #[cfg(target_os = "windows")]
 fn check(scheme: &str, _: &str, _: &str) {
-    let _ = unwrap!(open(format!("{}:test", scheme)));
+    unwrap!(open(format!("{}:test", scheme)));
 }
 
 fn gen_rand_schema() -> String {
@@ -124,7 +124,7 @@ fn ffi_install_and_check() {
     // let's copy the executable to a path
     // with a white space to test it's supported
     let exec_with_white_space = format!("{} after_white_space", exec);
-    assert!(std::fs::copy(exec.clone(), exec_with_white_space.clone()).unwrap() > 0);
+    assert!(unwrap!(std::fs::copy(exec.clone(), exec_with_white_space.clone())) > 0);
 
     let schema = gen_rand_schema();
     let schema_cstr = unwrap!(CString::new(schema.clone()));

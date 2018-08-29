@@ -60,7 +60,7 @@ script:
   - if [[ $TRAVIS_EVENT_TYPE = pull_request ]]; then
       if [[ $TRAVIS_RUST_VERSION =~ nightly ]]; then
         cargo fmt -- --check &&
-        cargo clippy && cargo clippy --profile=test;
+        cargo check && cargo clippy && cargo clippy --profile=test;
       else
         cargo test --release --verbose -- --test-threads=1;
       fi

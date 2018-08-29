@@ -10,6 +10,8 @@
 extern crate ffi_utils;
 extern crate rand;
 extern crate system_uri;
+#[macro_use]
+extern crate unwrap;
 
 use ffi_utils::base64_encode;
 use rand::Rng;
@@ -21,7 +23,7 @@ use system_uri::{install, open, App, SystemUriError};
 
 fn install_and_open() -> Result<(), SystemUriError> {
     let mut rng = rand::thread_rng();
-    let exec = String::from(std::env::current_exe().unwrap().to_str().unwrap());
+    let exec = String::from(unwrap!(unwrap!(std::env::current_exe()).to_str()));
     let app = App::new(
         "net.maidsafe.example".to_string(),
         "MaidSafe Ltd.".to_string(),
@@ -62,16 +64,6 @@ fn main() {
 
     if let Err(ref e) = install_and_open() {
         println!("error: {}", e);
-
-        for e in e.iter().skip(1) {
-            println!("caused by: {}", e);
-        }
-
-        // The backtrace is not always generated. Try to run this example
-        // with `RUST_BACKTRACE=1`.
-        if let Some(backtrace) = e.backtrace() {
-            println!("backtrace: {:?}", backtrace);
-        }
 
         ::std::process::exit(1);
     }

@@ -9,7 +9,7 @@
 
 use app::App;
 
-use errors::*;
+use errors::Error;
 use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::PathBuf;
@@ -17,22 +17,18 @@ use std::process::Command;
 use xdg_basedir::dirs::get_data_home;
 
 /// Open a given URI.
-pub fn open<S: Into<String>>(uri: S) -> Result<()> {
+pub fn open<S: Into<String>>(uri: S) -> Result<(), Error> {
     let uri = uri.into();
 
-    let output = Command::new("xdg-open")
-        .arg(uri.clone())
-        .output()
-        .chain_err(|| "Could not execute xdg-open")?;
+    let output = Command::new("xdg-open").arg(uri.clone()).output()?;
 
     if output.status.success() {
         Ok(())
     } else {
-        Err(format!(
-            "Executing `xdg-open {}` failed: {}",
+        Err(Error::XdgOpenError(
             uri,
-            String::from_utf8_lossy(&output.stdout)
-        ).into())
+            String::from_utf8_lossy(&output.stdout).to_string(),
+        ))
     }
 }
 
@@ -45,8 +41,8 @@ fn clean_string(input: &str) -> String {
 ///
 /// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
 /// provide a list of schemes (the initial part of a URI, like `https`).
-pub fn install(app: &App, schemes: &[String]) -> Result<()> {
-    let home = get_data_home().chain_err(|| "Home directory not found")?;
+pub fn install(app: &App, schemes: &[String]) -> Result<(), Error> {
+    let home = get_data_home().map_err(|_| Error::Unexpected("Home directory not found"))?;
     let ascii_name = format!(
         "{}-{}.desktop",
         clean_string(&app.vendor).as_str(),
@@ -59,11 +55,10 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
 
     let apps_dir = desktop_target.clone();
 
-    create_dir_all(apps_dir.clone()).chain_err(|| "Could not create app directory")?;
+    create_dir_all(apps_dir.clone())?;
 
     desktop_target.push(ascii_name.clone());
-    let mut f =
-        File::create(desktop_target.as_path()).chain_err(|| "Could not create app desktop file")?;
+    let mut f = File::create(desktop_target.as_path())?;
     let schemes_list = schemes
         .iter()
         .map(|s| match s.matches(char::is_uppercase).next() {
@@ -80,20 +75,19 @@ pub fn install(app: &App, schemes: &[String]) -> Result<()> {
         exec = app.exec,
         // app.icon.unwrap_or("".to_string()),
         mime_types = schemes_list.join(";")
-    )).chain_err(|| " Could not write app desktop file")?;
+    )).map_err(|_| Error::Unexpected("Could not write app desktop file"))?;
 
     let status = Command::new("update-desktop-database")
         .arg(apps_dir)
         .status()
-        .chain_err(|| "Could not run update-desktop-database")?;
+        .map_err(|_| Error::Unexpected("Could not run update-desktop-database"))?;
 
     for scheme in schemes_list {
         let _ = Command::new("xdg-mime")
             .arg("default")
             .arg(ascii_name.clone())
             .arg(scheme)
-            .status()
-            .chain_err(|| "Could not run xdg-mime")?;
+            .status()?;
     }
 
     if status.success() {

@@ -11,7 +11,7 @@
 
 use app::App;
 
-use errors::*;
+use errors::Error;
 use libc;
 use std::process::Command;
 
@@ -57,11 +57,8 @@ fn convert_to_cfstring(content: &str) -> CFStringRef {
 }
 
 /// Open a given URI.
-pub fn open(uri: String) -> Result<()> {
-    let output = Command::new("open")
-        .arg(uri)
-        .output()
-        .chain_err(|| "Could not execute open")?;
+pub fn open<S: Into<String>>(uri: S) -> Result<(), Error> {
+    let output = Command::new("open").arg(uri.into()).output()?;
 
     if output.status.success() {
         Ok(())
@@ -74,7 +71,7 @@ pub fn open(uri: String) -> Result<()> {
 ///
 /// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
 /// provide a list of schemes (the initial part of a URI, like `https`).
-pub fn install(app: &App, schemes: &[String]) -> Result<()> {
+pub fn install(app: &App, schemes: &[String]) -> Result<(), Error> {
     let bundle_id = convert_to_cfstring(app.bundle_id.as_str());
     for scheme in schemes {
         // FIXME: do we have any way to learn this failed?

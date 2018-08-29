@@ -13,7 +13,7 @@
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/maidsafe/QA/master/Images/maidsafe_logo.png",
     html_favicon_url = "http://maidsafe.net/img/favicon.ico",
-    html_root_url = "http://maidsafe.github.io/system_uri"
+    test(attr(forbid(warnings)))
 )]
 // For explanation of lint checks, run `rustc -W help` or see
 // https://github.
@@ -59,14 +59,11 @@
     unused_qualifications,
     unused_results
 )]
-// TODO: Remove `renamed_and_removed_lints` once
-// https://github.com/rust-lang-nursery/error-chain/pull/246 has been fixed.
 #![allow(
     box_pointers,
     missing_copy_implementations,
     missing_debug_implementations,
-    variant_size_differences,
-    renamed_and_removed_lints
+    variant_size_differences
 )]
 #![cfg_attr(feature = "clippy", feature(plugin))]
 #![cfg_attr(feature = "clippy", plugin(clippy))]
@@ -83,11 +80,9 @@
     feature = "clippy",
     allow(use_debug, too_many_arguments, needless_return)
 )]
-// `error_chain!` can recurse deeply
-#![recursion_limit = "1024"]
 
 #[macro_use]
-extern crate error_chain;
+extern crate quick_error;
 
 #[cfg(any(target_os = "macos", feature = "ffi"))]
 extern crate libc;
@@ -102,22 +97,48 @@ mod app;
 pub use app::App;
 
 mod errors {
+    use ffi_utils::StringError;
+    use std::io;
     use std::str::Utf8Error;
 
-    error_chain! {
-        types {
-            Error, ErrorKind, ChainErr, Result;
-        }
-
-        foreign_links {
-            Utf8Error(Utf8Error);
-        }
-
-        errors {
-            /// The SystemURI error used to wrap problems
-            SystemUriError(t: String) {
-                description("System URI Error")
-                display("Could not execute: {}", t)
+    quick_error! {
+        /// System URI error variants.
+        #[derive(Debug)]
+        pub enum Error {
+            /// IO error.
+            IoError(error: io::Error) {
+                description("Io error")
+                display("I/O error: {}", error)
+                from()
+            }
+            /// String error.
+            StringError(error: StringError) {
+                description("String error")
+                display("String error: {:?}", error)
+                from()
+            }
+            /// Utf-8 error.
+            Utf8Error(error: Utf8Error) {
+                description(error.description())
+                display("Utf-8 error: {}", error)
+                from()
+            }
+            #[cfg(target_os = "linux")]
+            /// XDG error.
+            XdgOpenError(uri: String, stdout: String) {
+                description(uri)
+                display("Executing `xdg-open {}` failed: {}", uri, stdout)
+            }
+            #[cfg(target_os = "windows")]
+            /// Open error.
+            ShellOpenError(code: i32) {
+                display("Using ShellExecuteW to open URL failed with code {}", code)
+            }
+            /// Unexpected error.
+            Unexpected(s: &'static str) {
+                description(s)
+                display("Unexpected error: {}", s)
+                from()
             }
         }
     }
