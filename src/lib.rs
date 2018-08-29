@@ -59,14 +59,11 @@
     unused_qualifications,
     unused_results
 )]
-// TODO: Remove `renamed_and_removed_lints` once
-// https://github.com/rust-lang-nursery/error-chain/pull/246 has been fixed.
 #![allow(
     box_pointers,
     missing_copy_implementations,
     missing_debug_implementations,
-    variant_size_differences,
-    renamed_and_removed_lints
+    variant_size_differences
 )]
 #![cfg_attr(feature = "clippy", feature(plugin))]
 #![cfg_attr(feature = "clippy", plugin(clippy))]
@@ -126,10 +123,16 @@ mod errors {
                 display("Utf-8 error: {}", error)
                 from()
             }
+            #[cfg(target_os = "linux")]
             /// XDG error.
             XdgOpenError(uri: String, stdout: String) {
                 description(uri)
                 display("Executing `xdg-open {}` failed: {}", uri, stdout)
+            }
+            #[cfg(target_os = "windows")]
+            /// Open error.
+            ShellOpenError(code: i32) {
+                display("Using ShellExecuteW to open URL failed with code {}", code)
             }
             /// Unexpected error.
             Unexpected(s: &'static str) {

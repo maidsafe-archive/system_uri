@@ -57,8 +57,8 @@ fn convert_to_cfstring(content: &str) -> CFStringRef {
 }
 
 /// Open a given URI.
-pub fn open(uri: String) -> Result<(), Error> {
-    let output = Command::new("open").arg(uri).output()?;
+pub fn open<S: Into<String>>(uri: S) -> Result<(), Error> {
+    let output = Command::new("open").arg(uri.into()).output()?;
 
     if output.status.success() {
         Ok(())

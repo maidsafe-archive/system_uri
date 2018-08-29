@@ -66,7 +66,7 @@ fn check(_: &str, _: &str, _: &str) {
 
 #[cfg(target_os = "windows")]
 fn check(scheme: &str, _: &str, _: &str) {
-    let _ = unwrap!(open(format!("{}:test", scheme)));
+    unwrap!(open(format!("{}:test", scheme)));
 }
 
 fn gen_rand_schema() -> String {

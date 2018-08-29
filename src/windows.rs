@@ -47,45 +47,37 @@ extern "system" {
 /// `app` should contain all fields necessary for registering URIs on all systems. `schemes` should
 /// provide a list of schemes (the initial part of a URI, like `https`).
 pub fn install(app: &App, schemes: &[String]) -> Result<(), Error> {
-    // but we can't write on root, we'll have to do it for the curent user only
+    // but we can't write on root, we'll have to do it for the current user only
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
     for protocol in schemes {
         let base_path = Path::new("Software").join("Classes").join(protocol);
-        let key = hkcu
-            .create_subkey(&base_path)
-            .chain_err(|| "could not create subkey")?;
+        let key = hkcu.create_subkey(&base_path)?;
         // set our app name as the for reference
-        key.set_value("", &app.name)
-            .chain_err(|| "could not set app name key")?;
-        //
-        key.set_value("URL Protocol", &"")
-            .chain_err(|| "could set url protocol")?;
+        key.set_value("", &app.name)?;
+        key.set_value("URL Protocol", &"")?;
 
-        let command_key = hkcu
-            .create_subkey(&base_path.join("shell").join("open").join("command"))
-            .chain_err(|| "could not execute open")?;
-        command_key
-            .set_value("", &format!("{} \"%1\"", app.exec))
-            .chain_err(|| "could not create subkey")?
+        let command_key =
+            hkcu.create_subkey(&base_path.join("shell").join("open").join("command"))?;
+        command_key.set_value("", &format!("{} \"%1\"", app.exec))?
     }
     Ok(())
 }
 
 /// Open a given URI.
 #[allow(unsafe_code)]
-pub fn open(uri: String) -> Result<(), Error> {
+pub fn open<S: Into<String>>(uri: S) -> Result<(), Error> {
     let err = unsafe {
         ShellExecuteW(
             ptr::null_mut(),
             to_wide_chars("open").as_ptr(),
-            to_wide_chars(&(uri.replace("\n", "%0A"))).as_ptr(),
+            to_wide_chars(&(uri.into().replace("\n", "%0A"))).as_ptr(),
             ptr::null(),
             ptr::null(),
             winapi::SW_SHOWNORMAL,
         )
     };
     if err < 32 {
-        Err(format!("Executing open failed with error_code {}.", err).into())
+        Err(Error::ShellOpenError(err))
     } else {
         Ok(())
     }
