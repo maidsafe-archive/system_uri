@@ -37,8 +37,6 @@
     non_shorthand_field_patterns,
     overflowing_literals,
     plugin_as_library,
-    private_no_mangle_fns,
-    private_no_mangle_statics,
     stable_features,
     unconditional_recursion,
     unknown_lints,
@@ -69,12 +67,7 @@
 #![cfg_attr(feature = "clippy", plugin(clippy))]
 #![cfg_attr(
     feature = "clippy",
-    deny(
-        clippy,
-        unicode_not_nfc,
-        wrong_pub_self_convention,
-        option_unwrap_used
-    )
+    deny(clippy, unicode_not_nfc, wrong_pub_self_convention, option_unwrap_used)
 )]
 #![cfg_attr(
     feature = "clippy",
