@@ -7,16 +7,16 @@
 // specific language governing permissions and limitations relating to use of the SAFE Network
 // Software.
 
-extern crate winapi;
-extern crate winreg;
+use winapi;
+use winreg;
 
 use self::winapi::windef::HWND;
 use self::winapi::winnt::LPCWSTR;
 use self::winreg::enums::HKEY_CURRENT_USER;
 use self::winreg::RegKey;
-use app::App;
+use crate::app::App;
 
-use errors::Error;
+use crate::errors::Error;
 use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;
 use std::path::Path;

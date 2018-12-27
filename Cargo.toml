@@ -8,6 +8,7 @@ name = "system_uri"
 readme = "README.md"
 repository = "https://github.com/maidsafe/system_uri"
 version = "0.4.0"
+edition = "2018"
 
 [dependencies]
 quick-error = "~1.2.2"
