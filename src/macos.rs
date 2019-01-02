@@ -9,9 +9,9 @@
 
 #![allow(unsafe_code, trivial_numeric_casts)]
 
-use app::App;
+use crate::app::App;
 
-use errors::Error;
+use crate::errors::Error;
 use libc;
 use std::process::Command;
 

@@ -1,15 +1,8 @@
 vars:
-  - &stable "1.28.0"
-  - &stable-i686 "1.28.0-i686-unknown-linux-gnu"
-  - &nightly "nightly-2018-07-07"
 env:
   global:
     - RUST_BACKTRACE=1
     - PATH=$PATH:$HOME/.cargo/bin
-    - RUST_STABLE=1.28.0
-    - RUST_NIGHTLY=nightly-2018-07-07
-    - RUST_RUSTFMT=0.99.2
-    - RUST_CLIPPY=0.0.212
 language: rust
 addons:
   apt:
@@ -20,18 +13,16 @@ addons:
 matrix:
   include:
     - os: linux
-      rust: *stable
+      rust: stable
     - os: linux
-      rust: *stable-i686
+      rust: stable-i686-unknown-linux-gnu
       addons:
         apt:
           packages:
             - *DEFAULT_PACKAGES
             - gcc-multilib
-    - os: linux
-      rust: *nightly
     - os: osx
-      rust: *stable
+      rust: stable
 sudo: false
 branches:
   only:
@@ -52,18 +43,15 @@ before_script:
     fi
   - curl -sSL https://github.com/maidsafe/QA/raw/master/travis/cargo_install.sh > cargo_install.sh
   - bash cargo_install.sh cargo-prune;
-  - if [ "$TRAVIS_RUST_VERSION" = $RUST_NIGHTLY ] && [ "$TRAVIS_OS_NAME" = linux ]; then
-      bash cargo_install.sh rustfmt-nightly "$RUST_RUSTFMT";
-      bash cargo_install.sh clippy "$RUST_CLIPPY";
-    fi
+  - rustup component add rustfmt;
+  - rustup component add clippy;
 script:
   - if [[ $TRAVIS_EVENT_TYPE = pull_request ]]; then
-      if [[ $TRAVIS_RUST_VERSION =~ nightly ]]; then
         cargo fmt -- --check &&
-        cargo check && cargo clippy && cargo clippy --profile=test;
-      else
-        cargo test --release --verbose -- --test-threads=1;
-      fi
+        cargo test --release --verbose -- --test-threads=1 &&
+        cargo check &&
+        cargo clippy &&
+        cargo clippy --profile=test;
     fi
 after_script:
   - if [[ $TRAVIS_EVENT_TYPE = pull_request && -n $(git diff --shortstat 2> /dev/null | tail -n1) ]]; then
@@ -102,5 +90,5 @@ deploy:
   on:
     branch: master
     tags: false
-    condition: $TRAVIS_RUST_VERSION =~ $RUST_STABLE && $TRAVIS_EVENT_TYPE = push
+    condition: $TRAVIS_EVENT_TYPE = push
 after_deploy: rm -rf target/deploy

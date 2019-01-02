@@ -37,8 +37,6 @@
     non_shorthand_field_patterns,
     overflowing_literals,
     plugin_as_library,
-    private_no_mangle_fns,
-    private_no_mangle_statics,
     stable_features,
     unconditional_recursion,
     unknown_lints,
@@ -69,12 +67,7 @@
 #![cfg_attr(feature = "clippy", plugin(clippy))]
 #![cfg_attr(
     feature = "clippy",
-    deny(
-        clippy,
-        unicode_not_nfc,
-        wrong_pub_self_convention,
-        option_unwrap_used
-    )
+    deny(clippy, unicode_not_nfc, wrong_pub_self_convention, option_unwrap_used)
 )]
 #![cfg_attr(
     feature = "clippy",
@@ -84,17 +77,8 @@
 #[macro_use]
 extern crate quick_error;
 
-#[cfg(any(target_os = "macos", feature = "ffi"))]
-extern crate libc;
-
-#[cfg(target_os = "linux")]
-extern crate xdg_basedir;
-
-#[cfg(feature = "ffi")]
-extern crate ffi_utils;
-
 mod app;
-pub use app::App;
+pub use crate::app::App;
 
 mod errors {
     use ffi_utils::StringError;
@@ -144,22 +128,22 @@ mod errors {
     }
 }
 
-pub use errors::Error as SystemUriError;
+pub use crate::errors::Error as SystemUriError;
 
 #[cfg(target_os = "linux")]
 mod linux;
 #[cfg(target_os = "linux")]
-pub use linux::{install, open};
+pub use crate::linux::{install, open};
 
 #[cfg(target_os = "windows")]
 mod windows;
 #[cfg(target_os = "windows")]
-pub use windows::{install, open};
+pub use crate::windows::{install, open};
 
 #[cfg(target_os = "macos")]
 mod macos;
 #[cfg(target_os = "macos")]
-pub use macos::{install, open};
+pub use crate::macos::{install, open};
 
 /// Foreign Function call Interface to use this library
 #[cfg(feature = "ffi")]

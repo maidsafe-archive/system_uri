@@ -7,9 +7,9 @@
 // specific language governing permissions and limitations relating to use of the SAFE Network
 // Software.
 
-use app::App;
+use crate::app::App;
 
-use errors::Error;
+use crate::errors::Error;
 use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::PathBuf;
@@ -67,7 +67,8 @@ pub fn install(app: &App, schemes: &[String]) -> Result<(), Error> {
                 format!("x-scheme-handler/{}", s.to_lowercase())
             }
             None => format!("x-scheme-handler/{}", s),
-        }).collect::<Vec<String>>();
+        })
+        .collect::<Vec<String>>();
 
     f.write_fmt(format_args!(
         include_str!("./template.desktop"),
@@ -75,7 +76,8 @@ pub fn install(app: &App, schemes: &[String]) -> Result<(), Error> {
         exec = app.exec,
         // app.icon.unwrap_or("".to_string()),
         mime_types = schemes_list.join(";")
-    )).map_err(|_| Error::Unexpected("Could not write app desktop file"))?;
+    ))
+    .map_err(|_| Error::Unexpected("Could not write app desktop file"))?;
 
     let status = Command::new("update-desktop-database")
         .arg(apps_dir)
