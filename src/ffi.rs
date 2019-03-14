@@ -59,7 +59,7 @@ pub unsafe extern "C" fn install(
             from_c_str(bundle)?,
             from_c_str(vendor)?,
             from_c_str(name)?,
-            exec.trim_right().to_owned(),
+            exec.trim_end().to_owned(),
             Some(from_c_str(icon)?),
         );
 
